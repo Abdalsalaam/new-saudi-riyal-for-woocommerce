@@ -1,3 +1,5 @@
+![riyal-cover.png](riyal-cover.png)
+
 # WooCommerce New Saudi Riyal Symbol Updater
 
 ## Description
