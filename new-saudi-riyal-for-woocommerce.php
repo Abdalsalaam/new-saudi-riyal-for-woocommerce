@@ -7,6 +7,8 @@
  * Author URI: https://profiles.wordpress.org/abdalsalaam/
  * Tested up to: 6.7
  * Requires PHP: 7.4
+ * Requires Plugins: woocommerce
+ * WC tested up to: 9.7
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,6 +16,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+if ( ! class_exists( 'WooCommerce' ) ) {
+	return;
 }
 
 /**
