@@ -45,6 +45,54 @@ function nsrwc_enqueue_sar_frontend_css() {
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_sar_frontend_css' );
 
 /**
+ * Wrap currency symbol with a span.
+ *
+ * @param $format
+ * @param $currency_pos
+ *
+ * @return string
+ */
+function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
+	if ( 'SAR' === get_woocommerce_currency() ) {
+		// Force left position regardless of WooCommerce settings
+		return '<span class="sar-currency-symbol">%1$s</span> %2$s';
+	}
+
+	return $format;
+}
+
+add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
+
+/**
+ * Replace SAR currency symbol.
+ *
+ * @param $currency_symbol
+ * @param $currency
+ *
+ * @return string
+ */
+function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
+	if ( 'SAR' === $currency ) {
+		return '';
+	}
+
+	return $currency_symbol;
+}
+
+add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
+
+/**
+ * Force left position for SAR currency
+ */
+function nsrwc_set_currency_position_left( $position ) {
+    if ( 'SAR' === get_woocommerce_currency() ) {
+        return 'left';
+    }
+    return $position;
+}
+add_filter( 'woocommerce_currency_position', 'nsrwc_set_currency_position_left' );
+
+/**
  * Enqueue admin CSS if currency is SAR.
  *
  * @return void
@@ -92,42 +140,6 @@ function nsrwc_add_admin_inline_css() {
     wp_add_inline_style( 'sar-admin-style', $css );
 }
 add_action( 'admin_enqueue_scripts', 'nsrwc_add_admin_inline_css' );
-
-/**
- * Wrap currency symbol with a span.
- *
- * @param $format
- * @param $currency_pos
- *
- * @return string
- */
-function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
-	if ( 'SAR' === get_woocommerce_currency() ) {
-		$format = str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
-	}
-
-	return $format;
-}
-
-add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
-
-/**
- * Replace SAR currency symbol.
- *
- * @param $currency_symbol
- * @param $currency
- *
- * @return string
- */
-function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
-	if ( 'SAR' === $currency ) {
-		return '';
-	}
-
-	return $currency_symbol;
-}
-
-add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
 
 /**
  * Apply SAR symbol in admin order list
