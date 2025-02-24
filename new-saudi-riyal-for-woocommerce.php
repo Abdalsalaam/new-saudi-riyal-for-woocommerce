@@ -45,6 +45,55 @@ function nsrwc_enqueue_sar_frontend_css() {
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_sar_frontend_css' );
 
 /**
+ * Enqueue admin CSS if currency is SAR.
+ *
+ * @return void
+ */
+function nsrwc_enqueue_sar_admin_css() {
+    if ( 'SAR' !== get_woocommerce_currency() ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'sar-admin-style',
+        plugins_url( 'assets/saudi-riyal-font/style.css', __FILE__ ),
+        array(),
+        '1.0'
+    );
+
+    wp_enqueue_script(
+        'sar-admin-blocks-fix',
+        plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
+        array( 'jquery' ),
+        '1.0',
+        true
+    );
+}
+
+add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_sar_admin_css' );
+
+/**
+ * Add admin-specific inline CSS for SAR symbol
+ */
+function nsrwc_add_admin_inline_css() {
+    if ( 'SAR' !== get_woocommerce_currency() ) {
+        return;
+    }
+
+    $css = "
+    .woocommerce-Price-currencySymbol,
+    .wc_payment_method .amount,
+    .woocommerce-table--order-details tfoot tr td,
+    .woocommerce-table--order-details tbody tr td {
+        font-family: 'saudi-riyal-font' !important;
+    }
+    ";
+    
+    wp_add_inline_style( 'sar-admin-style', $css );
+}
+add_action( 'admin_enqueue_scripts', 'nsrwc_add_admin_inline_css' );
+
+/**
  * Wrap currency symbol with a span.
  *
  * @param $format
@@ -72,10 +121,21 @@ add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
  */
 function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 	if ( 'SAR' === $currency ) {
-		return '';
+		return '';
 	}
 
 	return $currency_symbol;
 }
 
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
+
+/**
+ * Apply SAR symbol in admin order list
+ */
+function nsrwc_admin_order_amount_symbol( $formatted_total, $order ) {
+    if ( is_admin() && 'SAR' === get_woocommerce_currency() ) {
+        return '<span class="sar-currency-symbol">' . $formatted_total . '</span>';
+    }
+    return $formatted_total;
+}
+add_filter( 'woocommerce_admin_order_total', 'nsrwc_admin_order_amount_symbol', 10, 2 );
