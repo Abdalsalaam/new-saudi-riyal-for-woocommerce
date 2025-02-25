@@ -20,6 +20,7 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ### 1.0.1
 - Fix replacing the symbol within the admin dashboard.
+- Declare WooCommerce features compatibility to hide warnings.
 
 ### 1.0.0
 - Initial release.
