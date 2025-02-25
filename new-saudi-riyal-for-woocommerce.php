@@ -104,3 +104,16 @@ function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 }
 
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
+
+/**
+ * Declare WooCommerce features compatibility to hide warnings.
+ *
+ * @return void
+ */
+function nsrwc_declare_features_compatibility() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+}
+
+add_action( 'before_woocommerce_init', 'nsrwc_declare_features_compatibility', 10 );
