@@ -18,7 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WooCommerce' ) ) {
+$WC_plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
+
+if (
+	! in_array( $WC_plugin_path, wp_get_active_and_valid_plugins() )
+	&& ! in_array( $WC_plugin_path, wp_get_active_network_plugins() )
+) {
 	return;
 }
 
