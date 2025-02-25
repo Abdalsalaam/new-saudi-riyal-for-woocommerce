@@ -74,8 +74,7 @@ add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
  */
 function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
 	if ( 'SAR' === get_woocommerce_currency() ) {
-		// Force left position regardless of WooCommerce settings
-		return '<span class="sar-currency-symbol">%1$s</span> %2$s';
+		$format = str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
 	}
 
 	return $format;
