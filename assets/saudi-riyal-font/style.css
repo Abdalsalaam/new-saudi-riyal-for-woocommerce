@@ -21,18 +21,3 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-.sar-currency-symbol:before {
-    content: "\e900";
-}
-
-/* Basic price styles */
-.woocommerce-Price-amount {
-    unicode-bidi: isolate-override !important;
-    direction: ltr !important;
-}
-
-/* Hide original symbol */
-.sar-currency-symbol .woocommerce-Price-currencySymbol {
-    display: none;
-}
