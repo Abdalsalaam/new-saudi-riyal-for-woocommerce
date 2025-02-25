@@ -18,5 +18,8 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.0.1
+- Fix replacing the symbol within the admin dashboard.
+
 ### 1.0.0
 - Initial release.
