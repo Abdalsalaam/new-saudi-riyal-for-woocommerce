@@ -97,7 +97,7 @@ add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
  */
 function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 	if ( 'SAR' === $currency ) {
-		return '';
+		return '&#xe900;';
 	}
 
 	return $currency_symbol;
