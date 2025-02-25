@@ -109,13 +109,6 @@ function nsrwc_enqueue_sar_admin_css() {
         '1.0'
     );
 
-    wp_enqueue_script(
-        'sar-admin-blocks-fix',
-        plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
-        array( 'jquery' ),
-        '1.0',
-        true
-    );
 }
 
 add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_sar_admin_css' );
