@@ -84,13 +84,6 @@ add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 
 /**
  * Force left position for SAR currency
  */
-function nsrwc_set_currency_position_left( $position ) {
-    if ( 'SAR' === get_woocommerce_currency() ) {
-        return 'left';
-    }
-    return $position;
-}
-add_filter( 'woocommerce_currency_position', 'nsrwc_set_currency_position_left' );
 
 /**
  * Enqueue admin CSS if currency is SAR.
