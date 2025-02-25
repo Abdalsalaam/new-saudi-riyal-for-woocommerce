@@ -27,7 +27,7 @@ if ( ! class_exists( 'WooCommerce' ) ) {
  *
  * @return void
  */
-function nsrwc_enqueue_sar_frontend_css() {
+function nsrwc_enqueue_font_css() {
 	if ( 'SAR' !== get_woocommerce_currency() ) {
 		return;
 	}
@@ -38,6 +38,20 @@ function nsrwc_enqueue_sar_frontend_css() {
 		array(),
 		'1.0'
 	);
+}
+
+add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_font_css' );
+add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_font_css' );
+
+/**
+ * Enqueue front-end JS to fix blocks based products price currency.
+ *
+ * @return void
+ */
+function nsrwc_enqueue_frontend_scripts() {
+	if ( 'SAR' !== get_woocommerce_currency() ) {
+		return;
+	}
 
 	wp_enqueue_script(
 		'sar-blocks-fix',
@@ -48,7 +62,7 @@ function nsrwc_enqueue_sar_frontend_css() {
 	);
 }
 
-add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_sar_frontend_css' );
+add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
 
 /**
  * Wrap currency symbol with a span.
@@ -86,29 +100,3 @@ function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 }
 
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
-
-/**
- * Force left position for SAR currency
- */
-
-/**
- * Enqueue admin CSS if currency is SAR.
- *
- * @return void
- */
-function nsrwc_enqueue_sar_admin_css() {
-    if ( 'SAR' !== get_woocommerce_currency() ) {
-        return;
-    }
-
-    wp_enqueue_style(
-        'sar-admin-style',
-        plugins_url( 'assets/saudi-riyal-font/style.css', __FILE__ ),
-        array(),
-        '1.0'
-    );
-
-}
-
-add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_sar_admin_css' );
-
