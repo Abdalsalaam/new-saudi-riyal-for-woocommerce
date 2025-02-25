@@ -106,34 +106,3 @@ function nsrwc_enqueue_sar_admin_css() {
 
 add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_sar_admin_css' );
 
-/**
- * Add admin-specific inline CSS for SAR symbol
- */
-function nsrwc_add_admin_inline_css() {
-    if ( 'SAR' !== get_woocommerce_currency() ) {
-        return;
-    }
-
-    $css = "
-    .woocommerce-Price-currencySymbol,
-    .wc_payment_method .amount,
-    .woocommerce-table--order-details tfoot tr td,
-    .woocommerce-table--order-details tbody tr td {
-        font-family: 'saudi-riyal-font' !important;
-    }
-    ";
-    
-    wp_add_inline_style( 'sar-admin-style', $css );
-}
-add_action( 'admin_enqueue_scripts', 'nsrwc_add_admin_inline_css' );
-
-/**
- * Apply SAR symbol in admin order list
- */
-function nsrwc_admin_order_amount_symbol( $formatted_total, $order ) {
-    if ( is_admin() && 'SAR' === get_woocommerce_currency() ) {
-        return '<span class="sar-currency-symbol">' . $formatted_total . '</span>';
-    }
-    return $formatted_total;
-}
-add_filter( 'woocommerce_admin_order_total', 'nsrwc_admin_order_amount_symbol', 10, 2 );
