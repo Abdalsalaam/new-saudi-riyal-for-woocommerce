@@ -18,7 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WooCommerce' ) ) {
+$WC_plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
+
+if (
+	! in_array( $WC_plugin_path, wp_get_active_and_valid_plugins() )
+	&& ! in_array( $WC_plugin_path, wp_get_active_network_plugins() )
+) {
 	return;
 }
 
@@ -27,7 +32,7 @@ if ( ! class_exists( 'WooCommerce' ) ) {
  *
  * @return void
  */
-function nsrwc_enqueue_sar_frontend_css() {
+function nsrwc_enqueue_font_css() {
 	if ( 'SAR' !== get_woocommerce_currency() ) {
 		return;
 	}
@@ -38,6 +43,20 @@ function nsrwc_enqueue_sar_frontend_css() {
 		array(),
 		'1.0'
 	);
+}
+
+add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_font_css' );
+add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_font_css' );
+
+/**
+ * Enqueue front-end JS to fix blocks based products price currency.
+ *
+ * @return void
+ */
+function nsrwc_enqueue_frontend_scripts() {
+	if ( 'SAR' !== get_woocommerce_currency() ) {
+		return;
+	}
 
 	wp_enqueue_script(
 		'sar-blocks-fix',
@@ -48,7 +67,7 @@ function nsrwc_enqueue_sar_frontend_css() {
 	);
 }
 
-add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_sar_frontend_css' );
+add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
 
 /**
  * Wrap currency symbol with a span.
@@ -78,7 +97,7 @@ add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
  */
 function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 	if ( 'SAR' === $currency ) {
-		return '';
+		return '&#xe900;';
 	}
 
 	return $currency_symbol;
