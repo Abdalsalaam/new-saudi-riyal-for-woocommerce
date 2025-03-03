@@ -2,7 +2,7 @@
 /**
  * Plugin Name: New Saudi Riyal symbol for WooCommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
- * Version: 1.1
+ * Version: 1.2
  * Author: Abdalsalaam Halawa
  * Author URI: https://profiles.wordpress.org/abdalsalaam/
  * Tested up to: 6.7
@@ -28,6 +28,11 @@ if (
 }
 
 /**
+ * Plugin version.
+ */
+const NSRWC_VERSION = '1.2';
+
+/**
  * Enqueue front-end CSS if currency is SAR.
  *
  * @return void
@@ -41,7 +46,7 @@ function nsrwc_enqueue_font_css() {
 		'sar-frontend-style',
 		plugins_url( 'assets/saudi-riyal-font/style.css', __FILE__ ),
 		array(),
-		'1.0'
+		NSRWC_VERSION
 	);
 }
 
@@ -62,12 +67,28 @@ function nsrwc_enqueue_frontend_scripts() {
 		'sar-blocks-fix',
 		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
 		array( 'jquery' ),
-		'1.0',
-		true
+		NSRWC_VERSION
 	);
 }
 
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
+
+/**
+ * Force currency position : "left with space".
+ *
+ * @param $option String Current position.
+ *
+ * @return string
+ */
+function nsrwc_woocommerce_currency_pos( $option ) {
+	if ( 'SAR' === get_woocommerce_currency() ) {
+		return 'left_space';
+	}
+
+	return $option;
+}
+
+add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos' );
 
 /**
  * Wrap currency symbol with a span.
