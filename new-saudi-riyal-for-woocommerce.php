@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: New Saudi Riyal symbol for WooCommerce
+ * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
  * Version: 1.2
  * Author: Abdalsalaam Halawa
