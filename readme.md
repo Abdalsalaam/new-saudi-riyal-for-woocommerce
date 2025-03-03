@@ -1,6 +1,6 @@
 ![riyal-cover.png](riyal-cover.png)
 
-# WooCommerce New Saudi Riyal Symbol Updater
+# Saudi Riyal Symbol for WooCommerce
 
 ## Description
 
@@ -17,6 +17,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 لمزيد من التفاصيل، يرجى مراجعة [إعلان البنك المركزي السعودي](https://www.sama.gov.sa/en-US/Currency/SRS/Pages/default.aspx).
 
 ## Changelog
+
+### 1.2
+- For using "left with space" currency position.
 
 ### 1.1
 - Fix replacing the symbol within the admin dashboard.
