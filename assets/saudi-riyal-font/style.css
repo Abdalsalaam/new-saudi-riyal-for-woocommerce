@@ -10,7 +10,9 @@
     font-display: block;
 }
 
-.sar-currency-symbol {
+.sar-currency-symbol,
+.wp-block-woocommerce-product-regular-price-field .components-input-control__prefix,
+.wp-block-woocommerce-product-sale-price-field .components-input-control__prefix{
     font-family: 'saudi-riyal-font' !important;
     speak: never;
     font-style: normal;
