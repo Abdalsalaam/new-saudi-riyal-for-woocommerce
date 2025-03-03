@@ -41,7 +41,7 @@ function nsrwc_enqueue_font_css() {
 		'sar-frontend-style',
 		plugins_url( 'assets/saudi-riyal-font/style.css', __FILE__ ),
 		array(),
-		'1.0'
+		'1.1'
 	);
 }
 
@@ -62,7 +62,7 @@ function nsrwc_enqueue_frontend_scripts() {
 		'sar-blocks-fix',
 		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
 		array( 'jquery' ),
-		'1.0',
+		'1.1',
 		true
 	);
 }
@@ -117,3 +117,20 @@ function nsrwc_declare_features_compatibility() {
 }
 
 add_action( 'before_woocommerce_init', 'nsrwc_declare_features_compatibility', 10 );
+
+/**
+ * Force currency position : "left with space".
+ *
+ * @param $option String Current position.
+ *
+ * @return string
+ */
+function nsrwc_woocommerce_currency_pos( $option ) {
+	if ( 'SAR' === get_woocommerce_currency() ) {
+		return 'left_space';
+	}
+
+	return $option;
+}
+
+add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos' );
