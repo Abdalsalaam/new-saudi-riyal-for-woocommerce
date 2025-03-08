@@ -18,6 +18,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.4
+- Fix sale price currency symbol in blocks based themes.
+
 ### 1.3
 - Fixed an issue where the currency symbol didn't update correctly when changing product quantities in Cart/Checkout blocks.
 - Fix currency symbol in WooCommerce emails.
