@@ -1,6 +1,7 @@
 ![riyal-cover.png](riyal-cover.png)
 
 # Saudi Riyal Symbol for WooCommerce
+[WordPress.org repo](https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce/)
 
 ## Description
 
