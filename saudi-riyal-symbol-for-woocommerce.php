@@ -100,11 +100,11 @@ add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos',
  * @return string
  */
 function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
-	if ( 'SAR' === get_woocommerce_currency() ) {
-		$format = str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
+	if ( nsrwc_is_doing_email() || 'SAR' !== get_woocommerce_currency() ) {
+		return $format;
 	}
 
-	return $format;
+	return str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
 }
 
 add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 2 );
@@ -118,11 +118,15 @@ add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 2 );
  * @return string
  */
 function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
-	if ( 'SAR' === $currency ) {
-		return '&#xe900;';
+	if ( 'SAR' !== $currency ) {
+		return $currency_symbol;
 	}
 
-	return $currency_symbol;
+	if ( nsrwc_is_doing_email() ) {
+		return '<img src="' . plugins_url( 'assets/saudi-riyal-font/Saudi_Riyal_Symbol-1.png', __FILE__ ) . '" alt="' . $currency_symbol . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
+	}
+
+	return '&#xe900;';
 }
 
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 9999, 2 );
@@ -139,3 +143,22 @@ function nsrwc_declare_features_compatibility() {
 }
 
 add_action( 'before_woocommerce_init', 'nsrwc_declare_features_compatibility', 10 );
+
+/**
+ * Check if it is an email process.
+ *
+ * @return bool
+ */
+function nsrwc_is_doing_email() {
+	if (
+		doing_action( 'woocommerce_email_header' ) ||
+		doing_action( 'woocommerce_email_footer' ) ||
+		doing_action( 'woocommerce_email_order_details' ) ||
+		doing_action( 'woocommerce_email_order_meta' ) ||
+		did_action( 'woocommerce_before_email_order' )
+	) {
+		return true;
+	}
+
+	return false;
+}
