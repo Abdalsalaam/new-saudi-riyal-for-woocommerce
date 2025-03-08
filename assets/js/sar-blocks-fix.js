@@ -52,7 +52,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	let observer = new MutationObserver( function( mutations ) {
 		mutations.forEach( function( mutation ) {
 			mutation.addedNodes.forEach( function( node ) {
-				if ( node.nodeType !== 1 ) {
+				if ( 1 !== node.nodeType ) {
 					return;
 				}
 
