@@ -9,21 +9,40 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	/**
 	 * Wrap currency symbol in span with specified class.
 	 *
-	 * @param {(string|HTMLElement)} element Selector or HTMLElement.
+	 * @param {(HTMLElement)} el HTMLElement.
 	 */
-	function wrapCurrencySymbol( element ) {
-		let elements = ( typeof element === 'string' ) ? document.querySelectorAll( element ) : [ element ];
+	function wrapCurrencySymbol( el ) {
+		if ( el.querySelector( '.sar-currency-symbol' ) ) {
+			return; // Already wrapped, skip to avoid infinite loops.
+		}
 
-		elements.forEach( function( el ) {
-			let text = el.textContent.trim();
-			let match = text.match( /^(\D+)(.*)$/ );
+		let text = el.textContent.trim();
+		let match = text.match( /^(\D+)(.*)$/ );
 
-			if ( match ) {
-				let symbol = match[ 1 ];
-				let rest = match[ 2 ];
+		if ( match ) {
+			let symbol = match[ 1 ];
+			let rest = match[ 2 ];
 
-				el.innerHTML = '<span class="sar-currency-symbol">' + symbol + '</span>' + rest;
+			el.innerHTML = '<span class="sar-currency-symbol">' + symbol + '</span>' + rest;
+		}
+	}
+
+	/**
+	 * Observe changes within target elements safely without infinite loop.
+	 *
+	 * @param {HTMLElement} el
+	 */
+	function observeElementChanges( el ) {
+		let contentObserver = new MutationObserver( function() {
+			if ( ! el.querySelector( '.sar-currency-symbol' ) ) {
+				wrapCurrencySymbol( el );
 			}
+		} );
+
+		contentObserver.observe( el, {
+			characterData: true,
+			childList: true,
+			subtree: true
 		} );
 	}
 
@@ -37,10 +56,12 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 				if ( node.classList.contains( 'wc-block-formatted-money-amount' ) ) {
 					wrapCurrencySymbol( node );
+					observeElementChanges( node );
 				}
 
 				node.querySelectorAll( '.wc-block-formatted-money-amount' ).forEach( function( childNode ) {
 					wrapCurrencySymbol( childNode );
+					observeElementChanges( childNode );
 				} );
 			} );
 		} );
@@ -52,5 +73,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	} );
 
 	// Initial call to process existing elements on page load.
-	wrapCurrencySymbol( '.wc-block-formatted-money-amount' );
+	document.querySelectorAll( '.wc-block-formatted-money-amount' ).forEach( function( el ) {
+		wrapCurrencySymbol( el );
+		observeElementChanges( el );
+	} );
 } );
