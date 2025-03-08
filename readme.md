@@ -18,6 +18,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.3
+- Fixed an issue where the currency symbol didn't update correctly when changing product quantities in Cart/Checkout blocks.
+
 ### 1.2
 - For using "left with space" currency position.
 
