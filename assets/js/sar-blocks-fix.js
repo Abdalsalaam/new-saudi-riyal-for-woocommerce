@@ -7,13 +7,13 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	'use strict';
 
 	/**
-	 * Wrap currency symbol in span with specified class.
+	 * Wrap currency symbol in a span element.
 	 *
-	 * @param {(HTMLElement)} el HTMLElement.
+	 * @param {HTMLElement} el The HTML element to process.
 	 */
 	function wrapCurrencySymbol( el ) {
 		if ( el.querySelector( '.sar-currency-symbol' ) ) {
-			return; // Already wrapped, skip to avoid infinite loops.
+			return;
 		}
 
 		let text = el.textContent.trim();
@@ -28,9 +28,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	}
 
 	/**
-	 * Observe changes within target elements safely without infinite loop.
+	 * Observe DOM element for content changes safely.
 	 *
-	 * @param {HTMLElement} el
+	 * @param {HTMLElement} el The HTML element to observe.
 	 */
 	function observeElementChanges( el ) {
 		let contentObserver = new MutationObserver( function() {
@@ -46,22 +46,26 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		} );
 	}
 
-	// Observe DOM mutations to dynamically handle currency formatting.
+	/**
+	 * Initialize observer for dynamic DOM changes.
+	 */
 	let observer = new MutationObserver( function( mutations ) {
 		mutations.forEach( function( mutation ) {
 			mutation.addedNodes.forEach( function( node ) {
-				if ( 1 !== node.nodeType ) {
+				if ( node.nodeType !== 1 ) {
 					return;
 				}
 
-				if ( node.classList.contains( 'wc-block-formatted-money-amount' ) ) {
-					wrapCurrencySymbol( node );
-					observeElementChanges( node );
-				}
+				[ 'wc-block-formatted-money-amount', 'wc-block-components-product-price__value', 'wc-block-components-product-price__regular' ].forEach( function( className ) {
+					if ( node.classList.contains( className ) ) {
+						wrapCurrencySymbol( node );
+						observeElementChanges( node );
+					}
 
-				node.querySelectorAll( '.wc-block-formatted-money-amount' ).forEach( function( childNode ) {
-					wrapCurrencySymbol( childNode );
-					observeElementChanges( childNode );
+					node.querySelectorAll( '.' + className ).forEach( function( childNode ) {
+						wrapCurrencySymbol( childNode );
+						observeElementChanges( childNode );
+					} );
 				} );
 			} );
 		} );
@@ -72,9 +76,11 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		subtree: true
 	} );
 
-	// Initial call to process existing elements on page load.
-	document.querySelectorAll( '.wc-block-formatted-money-amount' ).forEach( function( el ) {
-		wrapCurrencySymbol( el );
-		observeElementChanges( el );
+	// Process existing elements on initial load.
+	[ '.wc-block-formatted-money-amount', '.wc-block-components-product-price__value', '.wc-block-components-product-price__regular' ].forEach( function( selector ) {
+		document.querySelectorAll( selector ).forEach( function( el ) {
+			wrapCurrencySymbol( el );
+			observeElementChanges( el );
+		} );
 	} );
 } );
