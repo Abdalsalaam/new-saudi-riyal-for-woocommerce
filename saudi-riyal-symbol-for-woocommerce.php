@@ -3,7 +3,7 @@
  * Plugin Name: Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
- * Version: 1.3
+ * Version: 1.4
  * Author: Abdalsalaam Halawa
  * Author URI: https://profiles.wordpress.org/abdalsalaam/
  * Tested up to: 6.7
@@ -31,7 +31,7 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '1.3';
+const NSRWC_VERSION = '1.4';
 
 /**
  * Enqueue front-end CSS if currency is SAR.
@@ -68,7 +68,8 @@ function nsrwc_enqueue_frontend_scripts() {
 		'sar-blocks-fix',
 		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
 		array(),
-		NSRWC_VERSION
+		NSRWC_VERSION,
+		array( 'in_footer' => true, )
 	);
 }
 
