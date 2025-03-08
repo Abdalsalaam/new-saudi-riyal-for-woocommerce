@@ -89,7 +89,7 @@ function nsrwc_woocommerce_currency_pos( $option ) {
 	return $option;
 }
 
-add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos' );
+add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos', 9999 );
 
 /**
  * Wrap currency symbol with a span.
@@ -107,7 +107,7 @@ function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
 	return $format;
 }
 
-add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 10, 2 );
+add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 2 );
 
 /**
  * Replace SAR currency symbol.
@@ -125,7 +125,7 @@ function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 	return $currency_symbol;
 }
 
-add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10, 2 );
+add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 9999, 2 );
 
 /**
  * Declare WooCommerce features compatibility to hide warnings.
