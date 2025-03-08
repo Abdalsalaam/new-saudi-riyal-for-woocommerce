@@ -67,7 +67,7 @@ function nsrwc_enqueue_frontend_scripts() {
 	wp_enqueue_script(
 		'sar-blocks-fix',
 		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
-		array( 'jquery' ),
+		array(),
 		NSRWC_VERSION
 	);
 }
