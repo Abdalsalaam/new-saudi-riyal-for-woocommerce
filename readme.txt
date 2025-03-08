@@ -1,4 +1,4 @@
-=== Saudi Riyal Symbol for WooCommerce ===
+=== Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي ===
 Author: abdalsalaam
 Author URI: https://profiles.wordpress.org/abdalsalaam/
 Tags: SAR, symbol, saudi, riyal
