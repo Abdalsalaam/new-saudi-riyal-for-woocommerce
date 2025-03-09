@@ -19,6 +19,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.5
+- Fixed currency symbol display in RTL emails.
+
 ### 1.4
 - Fix sale price currency symbol in blocks based themes.
 
