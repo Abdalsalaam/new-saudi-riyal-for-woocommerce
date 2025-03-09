@@ -133,6 +133,27 @@ function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 9999, 2 );
 
 /**
+ * Add css style to emails.
+ *
+ * @param string $css CSS code.
+ *
+ * @return string
+ */
+function nsrwc_email_styles_filter( $css, $email ) {
+	// Fix emails amount direction.
+	$css .= "
+	.woocommerce-Price-amount {
+		direction: ltr;
+		display:inline-block;
+	}
+	";
+
+	return $css;
+}
+
+add_filter( 'woocommerce_email_styles', 'nsrwc_email_styles_filter', 10, 2 );
+
+/**
  * Declare WooCommerce features compatibility to hide warnings.
  *
  * @return void
