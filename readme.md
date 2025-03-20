@@ -19,6 +19,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.6
+- Add PDF Invoices & Packing Slips for WooCommerce Compatibility.
+
 ### 1.5
 - Fixed currency symbol display in RTL emails.
 

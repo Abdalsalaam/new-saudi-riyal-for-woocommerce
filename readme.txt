@@ -19,6 +19,9 @@ A plugin that replaces the old Saudi Riyal symbol with the new one on WooCommerc
 
 == Changelog ==
 
+= 1.6 =
+- Add PDF Invoices & Packing Slips for WooCommerce Compatibility.
+
 = 1.5 =
 - Fixed currency symbol display in RTL emails.
 
