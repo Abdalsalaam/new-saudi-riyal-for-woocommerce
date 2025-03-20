@@ -17,6 +17,12 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 لمزيد من التفاصيل، يرجى مراجعة [إعلان البنك المركزي السعودي](https://www.sama.gov.sa/en-US/Currency/SRS/Pages/default.aspx).
 
+## Features
+- Replaces the old Saudi Riyal symbol with the official Saudi Riyal symbol.
+- Displays the updated symbol on the front-end, in WooCommerce emails, and in PDF invoices ( Compatible with PDF Invoices & Packing Slips for WooCommerce plugin ).
+- Supports RTL environments by forcing the symbol to appear on the left.
+- Support block-based themes.
+
 ## Changelog
 
 ### 1.6
