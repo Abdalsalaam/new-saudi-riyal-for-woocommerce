@@ -101,7 +101,11 @@ add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos',
  * @return string
  */
 function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
-	if ( nsrwc_is_doing_email() || 'SAR' !== get_woocommerce_currency() ) {
+	if ( nsrwc_is_doing_pdf() ) {
+		return class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ? '%2$s&nbsp;%1$s' : $format;
+	}
+
+	if ( 'SAR' !== get_woocommerce_currency() || nsrwc_is_doing_email() ) {
 		return $format;
 	}
 
@@ -123,14 +127,14 @@ function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
 		return $currency_symbol;
 	}
 
-	if ( nsrwc_is_doing_email() ) {
-		return '<img src="' . plugins_url( 'assets/saudi-riyal-font/Saudi_Riyal_Symbol-1.png', __FILE__ ) . '" alt="' . $currency_symbol . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
+	if ( nsrwc_is_doing_email() || nsrwc_is_doing_pdf() ) {
+		return '<img src="' . plugins_url( 'assets/saudi-riyal-font/Saudi_Riyal_Symbol-1.png', __FILE__ ) . '" alt="' . $currency . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
 	}
 
 	return '&#xe900;';
 }
 
-add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 9999, 2 );
+add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10002, 2 );
 
 /**
  * Add css style to emails.
@@ -178,6 +182,23 @@ function nsrwc_is_doing_email() {
 		doing_action( 'woocommerce_email_order_details' ) ||
 		doing_action( 'woocommerce_email_order_meta' ) ||
 		did_action( 'woocommerce_before_email_order' )
+	) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Check if it is a PDF file.
+ *
+ * @return bool
+ */
+function nsrwc_is_doing_pdf() {
+	if (
+		wp_doing_ajax() &&
+		isset( $_GET['action'] ) &&
+		'generate_wpo_wcpdf' === $_GET['action']
 	) {
 		return true;
 	}
