@@ -180,6 +180,7 @@ function nsrwc_is_doing_email() {
 		doing_action( 'woocommerce_email_footer' ) ||
 		doing_action( 'woocommerce_email_order_details' ) ||
 		doing_action( 'woocommerce_email_order_meta' ) ||
+		doing_action( 'woocommerce_email_attachments' ) ||
 		did_action( 'woocommerce_before_email_order' )
 	) {
 		return true;
