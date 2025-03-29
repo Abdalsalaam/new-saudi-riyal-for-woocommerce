@@ -19,11 +19,19 @@ A plugin that replaces the old Saudi Riyal symbol with the new one on WooCommerc
 
 == Features ==
 - Replaces the old Saudi Riyal symbol with the official Saudi Riyal symbol.
-- Displays the updated symbol on the front-end, in WooCommerce emails, and in PDF invoices ( Compatible with PDF Invoices & Packing Slips for WooCommerce plugin ).
+- Displays the updated symbol on the front-end, in WooCommerce emails, and in PDF invoices.
 - Supports RTL environments by forcing the symbol to appear on the left.
 - Support block-based themes.
 
+== Compatible With ==
+- WooCommerce emails.
+- PDF Invoices & Packing Slips for WooCommerce plugin.
+- Challan - PDF Invoice & Packing Slip for WooCommerce plugin.
+
 == Changelog ==
+
+= 1.7 =
+- Add `Challan - PDF Invoice & Packing Slip for WooCommerce` compatibility.
 
 = 1.6 =
 - Add PDF Invoices & Packing Slips for WooCommerce Compatibility.

@@ -96,11 +96,10 @@ add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos',
  * Wrap currency symbol with a span.
  *
  * @param $format
- * @param $currency_pos
  *
  * @return string
  */
-function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
+function nsrwc_wrap_currency_symbol( $format ) {
 	if ( nsrwc_is_doing_pdf() ) {
 		return class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ? '%2$s&nbsp;%1$s' : $format;
 	}
@@ -112,7 +111,7 @@ function nsrwc_wrap_currency_symbol( $format, $currency_pos ) {
 	return str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
 }
 
-add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 2 );
+add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 1 );
 
 /**
  * Replace SAR currency symbol.
@@ -143,7 +142,7 @@ add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 
  *
  * @return string
  */
-function nsrwc_email_styles_filter( $css, $email ) {
+function nsrwc_email_styles_filter( $css ) {
 	// Fix emails amount direction.
 	$css .= "
 	.woocommerce-Price-amount {
@@ -155,7 +154,7 @@ function nsrwc_email_styles_filter( $css, $email ) {
 	return $css;
 }
 
-add_filter( 'woocommerce_email_styles', 'nsrwc_email_styles_filter', 10, 2 );
+add_filter( 'woocommerce_email_styles', 'nsrwc_email_styles_filter', 10, 1 );
 
 /**
  * Declare WooCommerce features compatibility to hide warnings.
@@ -164,7 +163,7 @@ add_filter( 'woocommerce_email_styles', 'nsrwc_email_styles_filter', 10, 2 );
  */
 function nsrwc_declare_features_compatibility() {
 	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__ );
 	}
 }
 
@@ -195,10 +194,13 @@ function nsrwc_is_doing_email() {
  * @return bool
  */
 function nsrwc_is_doing_pdf() {
+	if ( ! wp_doing_ajax() || ! isset( $_GET['action'] ) ) {
+		return false;
+	}
+
 	if (
-		wp_doing_ajax() &&
-		isset( $_GET['action'] ) &&
-		'generate_wpo_wcpdf' === $_GET['action']
+		'generate_wpo_wcpdf' === $_GET['action'] ||
+		'wpifw_generate_invoice' === $_GET['action']
 	) {
 		return true;
 	}
