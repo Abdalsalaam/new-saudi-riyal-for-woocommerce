@@ -27,6 +27,7 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ### 1.7
 - Add `Challan - PDF Invoice & Packing Slip for WooCommerce` compatibility.
+- Fix currency symbol within email attached PDF invoice.
 
 ### 1.6
 - Add PDF Invoices & Packing Slips for WooCommerce Compatibility.
