@@ -4,7 +4,7 @@ Author URI: https://profiles.wordpress.org/abdalsalaam/
 Tags: SAR, symbol, saudi, riyal
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2
+Stable tag: 1.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
