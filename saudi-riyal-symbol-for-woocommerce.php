@@ -3,13 +3,13 @@
  * Plugin Name: Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
- * Version: 1.7
+ * Version: 1.8
  * Author: Abdalsalaam Halawa
  * Author URI: https://profiles.wordpress.org/abdalsalaam/
- * Tested up to: 6.7
+ * Tested up to: 6.8
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * WC tested up to: 9.7
+ * WC tested up to: 9.8
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -31,7 +31,44 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '1.7';
+const NSRWC_VERSION = '1.8';
+
+/**
+ * Check if SAR is the current active currency
+ *
+ * @return bool
+ */
+function nsrwc_is_sar_currency() {
+	// Check default WooCommerce currency.
+	if ( 'SAR' === get_woocommerce_currency() ) {
+		return true;
+	}
+
+	// Support for WOOCS - WooCommerce Currency Switcher.
+	if ( class_exists( 'WOOCS' ) ) {
+		global $WOOCS;
+		if ( $WOOCS && 'SAR' === $WOOCS->current_currency ) {
+			return true;
+		}
+	}
+
+	// Support for Multi Currency for WooCommerce by VillaTheme.
+	if ( function_exists( 'wmc_get_current_currency' ) ) {
+		if ( 'SAR' === wmc_get_current_currency() ) {
+			return true;
+		}
+	}
+
+	// Support for WooCommerce Multi-Currency.
+	if ( class_exists( 'WOOMC\Model\Currency' ) ) {
+		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() );
+		if ( 'SAR' === $current_currency ) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 /**
  * Enqueue front-end CSS if currency is SAR.
@@ -39,7 +76,7 @@ const NSRWC_VERSION = '1.7';
  * @return void
  */
 function nsrwc_enqueue_font_css() {
-	if ( 'SAR' !== get_woocommerce_currency() ) {
+	if ( ! nsrwc_is_sar_currency() ) {
 		return;
 	}
 
@@ -60,7 +97,7 @@ add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_font_css' );
  * @return void
  */
 function nsrwc_enqueue_frontend_scripts() {
-	if ( 'SAR' !== get_woocommerce_currency() ) {
+	if ( ! nsrwc_is_sar_currency() ) {
 		return;
 	}
 
@@ -83,7 +120,7 @@ add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
  * @return string
  */
 function nsrwc_woocommerce_currency_pos( $option ) {
-	if ( 'SAR' === get_woocommerce_currency() ) {
+	if ( nsrwc_is_sar_currency() ) {
 		return 'left_space';
 	}
 
@@ -104,7 +141,7 @@ function nsrwc_wrap_currency_symbol( $format ) {
 		return class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ? '%2$s&nbsp;%1$s' : $format;
 	}
 
-	if ( 'SAR' !== get_woocommerce_currency() || nsrwc_is_doing_email() ) {
+	if ( ! nsrwc_is_sar_currency() || nsrwc_is_doing_email() ) {
 		return $format;
 	}
 
