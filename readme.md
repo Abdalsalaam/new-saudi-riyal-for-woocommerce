@@ -25,6 +25,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.8
+- Add support for multiple currency plugins (WOOCS, Multi Currency for WooCommerce, and other popular currency switchers).
+
 ### 1.7
 - Add `Challan - PDF Invoice & Packing Slip for WooCommerce` compatibility.
 - Fix currency symbol within email attached PDF invoice.

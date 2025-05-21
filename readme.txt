@@ -2,9 +2,9 @@
 Author: abdalsalaam
 Author URI: https://profiles.wordpress.org/abdalsalaam/
 Tags: SAR, symbol, saudi, riyal
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.7
+Stable tag: 1.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -29,6 +29,9 @@ A plugin that replaces the old Saudi Riyal symbol with the new one on WooCommerc
 - Challan - PDF Invoice & Packing Slip for WooCommerce plugin.
 
 == Changelog ==
+
+= 1.8 =
+- Add support for multiple currency plugins (WOOCS, Multi Currency for WooCommerce, and other popular currency switchers).
 
 = 1.7 =
 - Add `Challan - PDF Invoice & Packing Slip for WooCommerce` compatibility.
@@ -56,3 +59,4 @@ A plugin that replaces the old Saudi Riyal symbol with the new one on WooCommerc
 
 = 1.0 =
 - Initial release.
+
