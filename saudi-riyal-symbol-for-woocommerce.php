@@ -5,7 +5,9 @@
  * Description: Ensure your store use the new Saudi Riyal symbol.
  * Version: 1.8
  * Author: Abdalsalaam Halawa
- * Author URI: https://profiles.wordpress.org/abdalsalaam/
+ * Author URI: https://halawa.io
+ * Text Domain: saudi-riyal-symbol-for-woocommerce
+ * Domain Path: /languages
  * Tested up to: 6.8
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -32,6 +34,21 @@ if (
  * Plugin version.
  */
 const NSRWC_VERSION = '1.8';
+
+/**
+ * Load plugin text domain for translations.
+ *
+ * @return void
+ */
+function nsrwc_load_textdomain() {
+	load_plugin_textdomain(
+		'saudi-riyal-symbol-for-woocommerce',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+
+add_action( 'plugins_loaded', 'nsrwc_load_textdomain' );
 
 /**
  * Check if SAR is the current active currency
@@ -245,3 +262,8 @@ function nsrwc_is_doing_pdf() {
 
 	return false;
 }
+
+/**
+ * Load admin notices and marketing class.
+ */
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-nsrwc-admin-notices.php';
