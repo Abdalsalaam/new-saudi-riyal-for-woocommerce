@@ -25,6 +25,9 @@ For more details, please refer to the [Saudi Central Bank announcement](https://
 
 ## Changelog
 
+### 1.9
+- WordPress 6.9 and WooCommerce 10.3 compatibility.
+
 ### 1.8
 - Add support for multiple currency plugins (WOOCS, Multi Currency for WooCommerce, and other popular currency switchers).
 

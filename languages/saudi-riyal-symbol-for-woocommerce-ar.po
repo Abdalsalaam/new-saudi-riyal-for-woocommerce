@@ -1,0 +1,55 @@
+# Translation file for Saudi Riyal Symbol for WooCommerce
+# Copyright (C) 2025
+# This file is distributed under the same license as the Saudi Riyal Symbol for WooCommerce plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Saudi Riyal Symbol for WooCommerce 1.8\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce\n"
+"POT-Creation-Date: 2025-01-14 16:00+0000\n"
+"PO-Revision-Date: 2025-01-14 16:00+0000\n"
+"Last-Translator: Abdalsalaam Halawa <contact@halawa.io>\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: WordPress\n"
+
+#: includes/class-nsrwc-admin-notices.php:73
+msgid "Saudi Riyal Symbol for WooCommerce"
+msgstr "رمز الريال السعودي لـ WooCommerce"
+
+#: includes/class-nsrwc-admin-notices.php:76
+msgid "WooCommerce will not implement the new Saudi Riyal symbol soon. I will continue to maintain this plugin and fix any issues you encounter."
+msgstr "حتى يتم دعم رمز الريال الجديد رسمياً في WooCommerce، ستبقى هذه الإضافة هنا لمساعدتك 💪 أنا ملتزم بتطويرها المستمر ودعمك عند الحاجة."
+
+#: includes/class-nsrwc-admin-notices.php:82
+#, php-format
+msgid "If you experience any issues, please %s."
+msgstr "إذا واجهت أي مشاكل، يرجى %s."
+
+#: includes/class-nsrwc-admin-notices.php:83
+msgid "get support"
+msgstr "الحصول على الدعم"
+
+#: includes/class-nsrwc-admin-notices.php:89
+msgid "Leave a 5-Star Review"
+msgstr "اترك تقييم 5 نجوم"
+
+#: includes/class-nsrwc-admin-notices.php:92
+msgid "Hire Me for Custom Development"
+msgstr "هل تحتاج مبرمج متخصص في متاجر WooCommerce؟"
+
+#: includes/class-nsrwc-admin-notices.php:100
+#, php-format
+msgid "Developed by %s - Available for WordPress & WooCommerce custom development projects."
+msgstr "تم التطوير بواسطة %s - متاح لمشاريع تطوير WordPress & WooCommerce."
+
+#: includes/class-nsrwc-admin-notices.php:179
+msgid "Get Support"
+msgstr "الحصول على الدعم"
+
+#: includes/class-nsrwc-admin-notices.php:180
+msgid "Hire Developer"
+msgstr "وظف المطور"
