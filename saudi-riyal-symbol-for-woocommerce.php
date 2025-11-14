@@ -3,15 +3,15 @@
  * Plugin Name: Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
- * Version: 1.8
+ * Version: 1.9
  * Author: Abdalsalaam Halawa
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
  * Domain Path: /languages
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * WC tested up to: 9.8
+ * WC tested up to: 10.3
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -33,7 +33,7 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '1.8';
+const NSRWC_VERSION = '1.9';
 
 /**
  * Load plugin text domain for translations.
