@@ -15,18 +15,31 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 == Description ==
 Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, in WooCommerce.
 
+إضافة ووردبريس تضيف دعم رموز العملات الخليجية الجديدة في WooCommerce:
+- **(SAR)** - رمز الريال السعودي
+- **(AED)** - رمز الدرهم الإماراتي
+- **(OMR)** - رمز الريال العماني
+
 == Features ==
-- Replaces the old Saudi Riyal symbol with the official Saudi Riyal symbol.
-- Displays the updated symbol on the front-end, in WooCommerce emails, and in PDF invoices.
+- Supports Saudi Riyal (SAR), UAE Dirham (AED), and Omani Rial (OMR) symbols.
+- Displays the currency symbols on the front-end, admin dashboard, WooCommerce emails, and PDF invoices.
 - Supports RTL environments by forcing the symbol to appear on the left.
-- Support block-based themes.
+- Supports block-based themes (Cart/Checkout blocks).
+- Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
 
 == Compatible With ==
-- WooCommerce emails.
-- PDF Invoices & Packing Slips for WooCommerce plugin.
-- Challan - PDF Invoice & Packing Slip for WooCommerce plugin.
+- WooCommerce emails
+- PDF Invoices & Packing Slips for WooCommerce plugin
+- Challan - PDF Invoice & Packing Slip for WooCommerce plugin
+- WOOCS - WooCommerce Currency Switcher
+- Multi Currency for WooCommerce (VillaTheme)
+- WooCommerce Multi-Currency
 
 == Changelog ==
+
+= 2.0 =
+- Added support for UAE Dirham (AED) and Omani Rial (OMR) symbols.
+- Better admin dashboard symbol rendering.
 
 = 1.9 =
 - WordPress 6.9 and WooCommerce 10.3 compatibility.
