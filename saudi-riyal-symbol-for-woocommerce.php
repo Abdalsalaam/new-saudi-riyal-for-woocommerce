@@ -119,15 +119,6 @@ function nsrwc_is_gulf_currency() {
 }
 
 /**
- * Check if SAR is the current active currency (backward compatibility).
- *
- * @return bool
- */
-function nsrwc_is_sar_currency() {
-	return 'SAR' === nsrwc_get_current_gulf_currency();
-}
-
-/**
  * Enqueue front-end CSS if currency is a Gulf currency.
  *
  * @return void
@@ -162,17 +153,16 @@ function nsrwc_enqueue_frontend_scripts() {
 
 	wp_enqueue_script(
 		'gulf-currencies-blocks-fix',
-		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
+		plugins_url( 'assets/js/gulf-currencies.js', __FILE__ ),
 		array(),
 		NSRWC_VERSION,
 		array( 'in_footer' => true )
 	);
 
 	// Pass currency unicode symbols to JavaScript for detection.
-	$currency_symbols = array();
-	foreach ( NSRWC_GULF_CURRENCIES as $code => $config ) {
-		$currency_symbols[ $code ] = html_entity_decode( $config['unicode'], ENT_HTML5, 'UTF-8' );
-	}
+	$currency_symbols = array_map( function ( $config ) {
+		return html_entity_decode( $config['unicode'], ENT_HTML5, 'UTF-8' );
+	}, NSRWC_GULF_CURRENCIES );
 
 	wp_localize_script(
 		'gulf-currencies-blocks-fix',
