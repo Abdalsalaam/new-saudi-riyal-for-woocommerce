@@ -36,7 +36,7 @@ class NSRWC_Admin_Notices {
 			return false;
 		}
 
-		if ( ! nsrwc_is_sar_currency() ) {
+		if ( ! nsrwc_is_gulf_currency() ) {
 			return false;
 		}
 

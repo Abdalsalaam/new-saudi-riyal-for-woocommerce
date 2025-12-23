@@ -1,29 +1,48 @@
 ![riyal-cover.png](riyal-cover.png)
 
-# Saudi Riyal Symbol for WooCommerce
+# Gulf Currencies Symbols for WooCommerce
 [WordPress.org repo](https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce/)
 
 ## Description
 
 ### English
 
-This plugin updates the currency symbol for the Saudi Riyal in WooCommerce by replacing the outdated symbol (SAR or ر.س) with the new symbol, as specified in the recent announcement by the Saudi Central Bank (SAMA).
+Adds support for the new Saudi Riyal (SAR), UAE Dirham (AED), and Omani Rial (OMR) symbols in WooCommerce.
 
-For more details, please refer to the [Saudi Central Bank announcement](https://www.sama.gov.sa/en-US/Currency/SRS/Pages/default.aspx).
+This plugin replaces the default currency symbols with the official new symbols:
+- **Saudi Riyal (SAR)** - New symbol as announced by the Saudi Central Bank (SAMA)
+- **UAE Dirham (AED)** - Official Dirham symbol
+- **Omani Rial (OMR)** - Official Rial symbol
+
+For more details about the Saudi Riyal symbol, please refer to the [Saudi Central Bank announcement](https://www.sama.gov.sa/en-US/Currency/SRS/Pages/default.aspx).
 
 ### العربية
 
-اضافة ووردبريس تقوم باستبدال رمز عملة الريال السعودي ر.س بالرمز الجديد الذي تم اطلاقه من قبل البنك المركزي السعودي.
-
-لمزيد من التفاصيل، يرجى مراجعة [إعلان البنك المركزي السعودي](https://www.sama.gov.sa/en-US/Currency/SRS/Pages/default.aspx).
+إضافة ووردبريس تضيف دعم رموز العملات الخليجية الجديدة في WooCommerce:
+- **(SAR)** - رمز الريال السعودي
+- **(AED)** - رمز الدرهم الإماراتي
+- **(OMR)** - رمز الريال العماني
 
 ## Features
-- Replaces the old Saudi Riyal symbol with the official Saudi Riyal symbol.
-- Displays the updated symbol on the front-end, in WooCommerce emails, and in PDF invoices ( Compatible with PDF Invoices & Packing Slips for WooCommerce plugin ).
+- Supports Saudi Riyal (SAR), UAE Dirham (AED), and Omani Rial (OMR) symbols.
+- Displays the currency symbols on the front-end, admin dashboard, WooCommerce emails, and PDF invoices.
 - Supports RTL environments by forcing the symbol to appear on the left.
-- Support block-based themes.
+- Supports block-based themes (Cart/Checkout blocks).
+- Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
+
+## Compatible With
+- WooCommerce emails
+- PDF Invoices & Packing Slips for WooCommerce plugin
+- Challan - PDF Invoice & Packing Slip for WooCommerce plugin
+- WOOCS - WooCommerce Currency Switcher
+- Multi Currency for WooCommerce (VillaTheme)
+- WooCommerce Multi-Currency
 
 ## Changelog
+
+### 2.0
+- Added support for UAE Dirham (AED) and Omani Rial (OMR) symbols.
+- Better admin dashboard symbol rendering.
 
 ### 1.9
 - WordPress 6.9 and WooCommerce 10.3 compatibility.
