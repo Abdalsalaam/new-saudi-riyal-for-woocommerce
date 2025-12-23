@@ -6,7 +6,7 @@ Tested up to: 6.9
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC tested up to: 10.4
-Stable tag: 1.8
+Stable tag: 2.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
