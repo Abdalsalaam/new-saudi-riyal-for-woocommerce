@@ -3,7 +3,7 @@
  * Plugin Name: Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Ensure your store use the new Saudi Riyal symbol.
- * Version: 1.9
+ * Version: 2.0
  * Author: Abdalsalaam Halawa
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
@@ -33,7 +33,25 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '1.9';
+const NSRWC_VERSION = '2.0';
+
+/**
+ * Gulf currencies configuration with unicode mappings.
+ */
+const NSRWC_GULF_CURRENCIES = array(
+	'SAR' => array(
+		'unicode' => '&#x20c1;',
+		'png'     => 'SAR.png',
+	),
+	'AED' => array(
+		'unicode' => '&#xe001;',
+		'png'     => 'AED.png',
+	),
+	'OMR' => array(
+		'unicode' => '&#xe900;',
+		'png'     => 'OMR.png',
+	),
+);
 
 /**
  * Load plugin text domain for translations.
@@ -51,36 +69,40 @@ function nsrwc_load_textdomain() {
 add_action( 'plugins_loaded', 'nsrwc_load_textdomain' );
 
 /**
- * Check if SAR is the current active currency
+ * Get the current active Gulf currency code if applicable.
  *
- * @return bool
+ * @return string|false Currency code (SAR, AED, OMR) or false if not a Gulf currency.
  */
-function nsrwc_is_sar_currency() {
+function nsrwc_get_current_gulf_currency() {
+	$gulf_currencies = array_keys( NSRWC_GULF_CURRENCIES );
+
 	// Check default WooCommerce currency.
-	if ( 'SAR' === get_woocommerce_currency() ) {
-		return true;
+	$wc_currency = get_woocommerce_currency();
+	if ( in_array( $wc_currency, $gulf_currencies, true ) ) {
+		return $wc_currency;
 	}
 
 	// Support for WOOCS - WooCommerce Currency Switcher.
 	if ( class_exists( 'WOOCS' ) ) {
 		global $WOOCS;
-		if ( $WOOCS && 'SAR' === $WOOCS->current_currency ) {
-			return true;
+		if ( $WOOCS && in_array( $WOOCS->current_currency, $gulf_currencies, true ) ) {
+			return $WOOCS->current_currency;
 		}
 	}
 
 	// Support for Multi Currency for WooCommerce by VillaTheme.
 	if ( function_exists( 'wmc_get_current_currency' ) ) {
-		if ( 'SAR' === wmc_get_current_currency() ) {
-			return true;
+		$current = wmc_get_current_currency();
+		if ( in_array( $current, $gulf_currencies, true ) ) {
+			return $current;
 		}
 	}
 
 	// Support for WooCommerce Multi-Currency.
 	if ( class_exists( 'WOOMC\Model\Currency' ) ) {
 		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() );
-		if ( 'SAR' === $current_currency ) {
-			return true;
+		if ( in_array( $current_currency, $gulf_currencies, true ) ) {
+			return $current_currency;
 		}
 	}
 
@@ -88,18 +110,36 @@ function nsrwc_is_sar_currency() {
 }
 
 /**
- * Enqueue front-end CSS if currency is SAR.
+ * Check if the current currency is a supported Gulf currency.
+ *
+ * @return bool
+ */
+function nsrwc_is_gulf_currency() {
+	return false !== nsrwc_get_current_gulf_currency();
+}
+
+/**
+ * Check if SAR is the current active currency (backward compatibility).
+ *
+ * @return bool
+ */
+function nsrwc_is_sar_currency() {
+	return 'SAR' === nsrwc_get_current_gulf_currency();
+}
+
+/**
+ * Enqueue front-end CSS if currency is a Gulf currency.
  *
  * @return void
  */
 function nsrwc_enqueue_font_css() {
-	if ( ! nsrwc_is_sar_currency() ) {
+	if ( ! nsrwc_is_gulf_currency() ) {
 		return;
 	}
 
 	wp_enqueue_style(
-		'sar-frontend-style',
-		plugins_url( 'assets/saudi-riyal-font/style.css', __FILE__ ),
+		'gulf-currencies-style',
+		plugins_url( 'assets/css/style.css', __FILE__ ),
 		array(),
 		NSRWC_VERSION
 	);
@@ -114,30 +154,48 @@ add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_font_css' );
  * @return void
  */
 function nsrwc_enqueue_frontend_scripts() {
-	if ( ! nsrwc_is_sar_currency() ) {
+	$current_currency = nsrwc_get_current_gulf_currency();
+
+	if ( ! $current_currency ) {
 		return;
 	}
 
 	wp_enqueue_script(
-		'sar-blocks-fix',
+		'gulf-currencies-blocks-fix',
 		plugins_url( 'assets/js/sar-blocks-fix.js', __FILE__ ),
 		array(),
 		NSRWC_VERSION,
-		array( 'in_footer' => true, )
+		array( 'in_footer' => true )
+	);
+
+	// Pass currency unicode symbols to JavaScript for detection.
+	$currency_symbols = array();
+	foreach ( NSRWC_GULF_CURRENCIES as $code => $config ) {
+		$currency_symbols[ $code ] = html_entity_decode( $config['unicode'], ENT_HTML5, 'UTF-8' );
+	}
+
+	wp_localize_script(
+		'gulf-currencies-blocks-fix',
+		'nsrwcGulfCurrencies',
+		array(
+			'symbols'         => $currency_symbols,
+			'currentCurrency' => $current_currency,
+		)
 	);
 }
 
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
+add_action( 'admin_enqueue_scripts', 'nsrwc_enqueue_frontend_scripts' );
 
 /**
- * Force currency position : "left with space".
+ * Force currency position : "left with space" for Gulf currencies.
  *
- * @param $option String Current position.
+ * @param string $option Current position.
  *
  * @return string
  */
 function nsrwc_woocommerce_currency_pos( $option ) {
-	if ( nsrwc_is_sar_currency() ) {
+	if ( nsrwc_is_gulf_currency() ) {
 		return 'left_space';
 	}
 
@@ -147,47 +205,45 @@ function nsrwc_woocommerce_currency_pos( $option ) {
 add_filter( 'option_woocommerce_currency_pos', 'nsrwc_woocommerce_currency_pos', 9999 );
 
 /**
- * Wrap currency symbol with a span.
+ * Adjust currency format for PDF contexts.
  *
- * @param $format
+ * @param string $format Price format string.
  *
  * @return string
  */
 function nsrwc_wrap_currency_symbol( $format ) {
-	if ( nsrwc_is_doing_pdf() ) {
-		return class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ? '%2$s&nbsp;%1$s' : $format;
+	if ( nsrwc_is_doing_pdf() && class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ) {
+		return '%2$s&nbsp;%1$s';
 	}
 
-	if ( ! nsrwc_is_sar_currency() || nsrwc_is_doing_email() ) {
-		return $format;
-	}
-
-	return str_replace( '%1$s', '<span class="sar-currency-symbol">%1$s</span>', $format );
+	return $format;
 }
 
 add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 1 );
 
 /**
- * Replace SAR currency symbol.
+ * Replace Gulf currency symbols with custom font icons.
  *
- * @param $currency_symbol
- * @param $currency
+ * @param string $currency_symbol Original currency symbol.
+ * @param string $currency        Currency code.
  *
  * @return string
  */
-function nsrwc_replace_sar_currency_symbol( $currency_symbol, $currency ) {
-	if ( 'SAR' !== $currency ) {
+function nsrwc_replace_gulf_currency_symbol( $currency_symbol, $currency ) {
+	if ( ! isset( NSRWC_GULF_CURRENCIES[ $currency ] ) ) {
 		return $currency_symbol;
 	}
 
+	$config = NSRWC_GULF_CURRENCIES[ $currency ];
+
 	if ( nsrwc_is_doing_email() || nsrwc_is_doing_pdf() ) {
-		return '<img src="' . plugins_url( 'assets/saudi-riyal-font/Saudi_Riyal_Symbol-1.png', __FILE__ ) . '" alt="' . $currency . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
+		return '<img src="' . plugins_url( 'assets/icons/png/' . $config['png'], __FILE__ ) . '" alt="' . esc_attr( $currency ) . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
 	}
 
-	return '&#xe900;';
+	return $config['unicode'];
 }
 
-add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_sar_currency_symbol', 10002, 2 );
+add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_gulf_currency_symbol', 10002, 2 );
 
 /**
  * Add css style to emails.
