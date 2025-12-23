@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Saudi Riyal Symbol for WooCommerce - رمز الريال السعودي
+ * Plugin Name: Gulf currencies Symbols for WooCommerce - رمز الريال السعودي والدرهم الإماراتي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
- * Description: Ensure your store use the new Saudi Riyal symbol.
+ * Description: Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, in WooCommerce.
  * Version: 2.0
  * Author: Abdalsalaam Halawa
  * Author URI: https://halawa.io
@@ -11,7 +11,7 @@
  * Tested up to: 6.9
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * WC tested up to: 10.3
+ * WC tested up to: 10.4
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
