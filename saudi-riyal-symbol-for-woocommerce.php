@@ -224,6 +224,11 @@ function nsrwc_replace_gulf_currency_symbol( $currency_symbol, $currency ) {
 		return $currency_symbol;
 	}
 
+	// Bots: return WooCommerce's default symbol so crawlers can parse prices.
+	if ( nsrwc_is_seo_or_llm_bot() ) {
+		return $currency_symbol;
+	}
+
 	$config = NSRWC_GULF_CURRENCIES[ $currency ];
 
 	if ( nsrwc_is_doing_email() || nsrwc_is_doing_pdf() ) {
@@ -307,6 +312,62 @@ function nsrwc_is_doing_pdf() {
 	}
 
 	return false;
+}
+
+/**
+ * Detect SEO and LLM crawlers via the User-Agent header.
+ *
+ * The plugin's custom glyphs use new/PUA Unicode codepoints that crawlers
+ * (Googlebot, GPTBot, ClaudeBot, etc.) cannot render in text extraction,
+ * which breaks price parsing in structured data and page content. For these
+ * bots we fall back to WooCommerce's default symbol. Result is cached in a
+ * static so the User-Agent is parsed only once per request.
+ *
+ * @since 2.1
+ *
+ * @return bool
+ */
+function nsrwc_is_seo_or_llm_bot(): bool {
+	static $is_bot = null;
+
+	if ( null !== $is_bot ) {
+		return $is_bot;
+	}
+
+	if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+		return $is_bot = false;
+	}
+
+	$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+
+	$bot_tokens = array(
+		// SEO crawlers.
+		'Googlebot',
+		'Bingbot',
+		'Slurp',
+		'DuckDuckBot',
+		'Baiduspider',
+		'YandexBot',
+		// LLM / AI crawlers.
+		'GPTBot',
+		'ClaudeBot',
+		'PerplexityBot',
+		'Applebot',
+		'meta-externalagent',
+		'Bytespider',
+		'cohere-ai',
+		'anthropic-ai',
+	);
+
+	$is_bot = false;
+	foreach ( $bot_tokens as $token ) {
+		if ( false !== stripos( $user_agent, $token ) ) {
+			$is_bot = true;
+			break;
+		}
+	}
+
+	return $is_bot;
 }
 
 /**
