@@ -8,10 +8,10 @@
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
  * Domain Path: /languages
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
- * WC tested up to: 10.4
+ * WC tested up to: 10.8
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
