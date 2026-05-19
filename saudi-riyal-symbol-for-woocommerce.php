@@ -241,6 +241,30 @@ function nsrwc_replace_gulf_currency_symbol( $currency_symbol, $currency ) {
 add_filter( 'woocommerce_currency_symbol', 'nsrwc_replace_gulf_currency_symbol', 10002, 2 );
 
 /**
+ * Replace Gulf currency symbols in the plural symbol array.
+ *
+ * Third-party plugins that read symbols via get_woocommerce_currency_symbols()
+ * only trigger the plural `woocommerce_currency_symbols` filter, bypassing the
+ * singular one above. Mirror the replacement here so those consumers also pick
+ * up our custom glyphs.
+ *
+ * @param array $symbols Currency code => symbol map.
+ *
+ * @return array
+ */
+function nsrwc_replace_gulf_currency_symbols_array( $symbols ) {
+	foreach ( array_keys( NSRWC_GULF_CURRENCIES ) as $code ) {
+		if ( isset( $symbols[ $code ] ) ) {
+			$symbols[ $code ] = nsrwc_replace_gulf_currency_symbol( $symbols[ $code ], $code );
+		}
+	}
+
+	return $symbols;
+}
+
+add_filter( 'woocommerce_currency_symbols', 'nsrwc_replace_gulf_currency_symbols_array', 10002, 1 );
+
+/**
  * Add css style to emails.
  *
  * @param string $css CSS code.
