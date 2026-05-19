@@ -38,8 +38,10 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 == Changelog ==
 
 = 2.1 =
-- Return the default WooCommerce currency symbol to SEO and LLM crawlers so prices stay machine-readable in structured data and AI search results.
 - WordPress 7.0 and WooCommerce 10.8 compatibility.
+- Return the default WooCommerce currency symbol to SEO and LLM crawlers so prices stay machine-readable in structured data and AI search results.
+- Improve compatibility with third-party plugins that read currency symbols via `get_woocommerce_currency_symbols()`.
+- Ensure the admin dashboard currency font is applied even when third-party admin stylesheets re-declare `font-family` on the same element.
 
 = 2.0 =
 - Added support for UAE Dirham (AED) and Omani Rial (OMR) symbols.

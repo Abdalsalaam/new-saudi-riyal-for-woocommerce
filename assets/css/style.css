@@ -29,5 +29,5 @@
 
 /* WooCommerce Admin Dashboard */
 .gulf-currency-dashboard{
-    font-family: 'gulf-currencies', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: 'gulf-currencies', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
