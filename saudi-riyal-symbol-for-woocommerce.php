@@ -8,7 +8,7 @@
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
  * Domain Path: /languages
- * Requires at least: 6.5
+ * Requires at least: 6.3
  * Tested up to: 7.1
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -42,6 +42,8 @@ const NSRWC_VERSION = '2.3';
 /**
  * Gulf currencies configuration.
  *
+ * `unicode`  Retained as an alias of `char` in HTML-entity form: it was part of
+ *            this public constant before 2.3 and third-party snippets read it.
  * `char`     The glyph we render for display. SAR uses U+20C1 SAUDI RIYAL SIGN, the
  *            codepoint officially assigned by Unicode. AED and OMR have no assigned
  *            codepoint yet, so they use Private Use Area codepoints that only resolve
@@ -54,16 +56,19 @@ const NSRWC_VERSION = '2.3';
  */
 const NSRWC_GULF_CURRENCIES = array(
 	'SAR' => array(
-		'char' => "\u{20C1}",
-		'png'  => 'SAR.png',
+		'char'    => "\u{20C1}",
+		'unicode' => '&#x20c1;',
+		'png'     => 'SAR.png',
 	),
 	'AED' => array(
-		'char' => "\u{E001}",
-		'png'  => 'AED.png',
+		'char'    => "\u{E001}",
+		'unicode' => '&#xe001;',
+		'png'     => 'AED.png',
 	),
 	'OMR' => array(
-		'char' => "\u{E900}",
-		'png'  => 'OMR.png',
+		'char'    => "\u{E900}",
+		'unicode' => '&#xe900;',
+		'png'     => 'OMR.png',
 	),
 );
 
@@ -257,6 +262,11 @@ function nsrwc_should_render_glyph( $currency ) {
 	} elseif ( ! nsrwc_should_load_assets() ) {
 		// The webfont is not loaded on this request, so the glyph would be tofu.
 		$render = false;
+	} elseif ( nsrwc_is_doing_email() || nsrwc_is_doing_pdf() ) {
+		// An email or invoice is read by a person no matter what triggered it, so
+		// it keeps the symbol even when the request itself is cron or WP-CLI —
+		// otherwise the same email looks different depending on how it was sent.
+		$render = true;
 	} elseif ( nsrwc_is_machine_context() ) {
 		$render = false;
 	} elseif ( nsrwc_is_seo_or_llm_bot() ) {
@@ -375,19 +385,37 @@ add_filter( 'admin_body_class', 'nsrwc_body_class' );
 /**
  * Adjust currency format for PDF contexts.
  *
- * @param string $format Price format string.
+ * @param string $format       Price format string.
+ * @param string $currency_pos Configured currency position.
  *
  * @return string
  */
-function nsrwc_wrap_currency_symbol( $format ) {
+function nsrwc_wrap_currency_symbol( $format, $currency_pos = '' ) {
 	if ( nsrwc_is_doing_pdf() && class_exists( 'WCPDF_Custom_PDF_Maker_mPDF' ) ) {
 		return '%2$s&nbsp;%1$s';
+	}
+
+	// On the site the gap between glyph and amount comes from the stylesheet, but
+	// email and PDF never load it, so there the space goes back into the format.
+	// Scoped to those two contexts so the markup product feeds parse is untouched.
+	if ( nsrwc_is_doing_email() || nsrwc_is_doing_pdf() ) {
+		$currency = nsrwc_get_current_gulf_currency();
+
+		if ( is_string( $currency ) && nsrwc_should_render_glyph( $currency ) ) {
+			if ( 'left' === $currency_pos ) {
+				return '%1$s&nbsp;%2$s';
+			}
+
+			if ( 'right' === $currency_pos ) {
+				return '%2$s&nbsp;%1$s';
+			}
+		}
 	}
 
 	return $format;
 }
 
-add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 1 );
+add_filter( 'woocommerce_price_format', 'nsrwc_wrap_currency_symbol', 9999, 2 );
 
 /**
  * Replace Gulf currency symbols with custom font glyphs.

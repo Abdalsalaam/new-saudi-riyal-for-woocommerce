@@ -2,7 +2,7 @@
 Author: abdalsalaam
 Author URI: https://halawa.io
 Tags: SAR, AED, OMR, symbol, saudi
-Requires at least: 6.5
+Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
@@ -42,7 +42,7 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 Compatibility release. The currency symbol is no longer allowed to reach systems that read prices as data.
 
 - Fixed product feeds (Google Shopping / Merchant Center, Facebook, TikTok, Pinterest and other feed plugins) receiving the currency symbol where the price should be. The plugin used to force WooCommerce's currency position to "left with space", which changed the rendered price markup that feed plugins parse.
-- Stopped overriding the store's "Currency position" setting. The setting is now honoured as the merchant configured it, and the spacing around the symbol is applied with CSS instead.
+- Stopped overriding the store's "Currency position" setting. The setting is now honoured as the merchant configured it, and the spacing around the symbol is applied with CSS instead. **If you had set the position to "right" or "right with space", the symbol will now actually move to the right** - previous versions forced it to the left regardless. Stores on the default setting look the same as before.
 - The symbol is no longer replaced in machine-readable output: the REST API, WP-CLI, cron, XML-RPC and feeds now always receive WooCommerce's standard symbol. The Cart/Checkout blocks (Store API) still get the new symbol.
 - Fixed the email/PDF image fallback leaking into every price rendered later in the same request, including REST API responses and product feeds.
 - The plain-text part of order emails no longer receives an HTML image tag in place of the symbol.
@@ -101,3 +101,7 @@ Compatibility release. The currency symbol is no longer allowed to reach systems
 = 1.0 =
 - Initial release.
 
+== Upgrade Notice ==
+
+= 2.3 =
+Fixes the currency symbol corrupting product feeds, REST API responses and other machine-readable output. One visible change: the store's own "Currency position" setting is now respected instead of being forced to "left with space", so stores that had chosen "right" will see the symbol move to where they configured it.
