@@ -39,21 +39,8 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 == Changelog ==
 
 = 2.3 =
-Compatibility release. The currency symbol is no longer allowed to reach systems that read prices as data.
-
-- Fixed product feeds (Google Shopping / Merchant Center, Facebook, TikTok, Pinterest and other feed plugins) receiving the currency symbol where the price should be. The plugin used to force WooCommerce's currency position to "left with space", which changed the rendered price markup that feed plugins parse.
-- Stopped overriding the store's "Currency position" setting. The setting is now honoured as the merchant configured it, and the spacing around the symbol is applied with CSS instead. **If you had set the position to "right" or "right with space", the symbol will now actually move to the right** - previous versions forced it to the left regardless. Stores on the default setting look the same as before.
-- The symbol is no longer replaced in machine-readable output: the REST API, WP-CLI, cron, XML-RPC and feeds now always receive WooCommerce's standard symbol. The Cart/Checkout blocks (Store API) still get the new symbol.
-- Fixed the email/PDF image fallback leaking into every price rendered later in the same request, including REST API responses and product feeds.
-- The plain-text part of order emails no longer receives an HTML image tag in place of the symbol.
-- Fixed a potential infinite recursion (and white screen) with multi-currency plugins that read the currency position while resolving the active currency.
-- The symbol is now emitted as a real character instead of an HTML entity, so plugins that treat it as plain text no longer show a literal "&#x20c1;".
-- Lowered the filter priority so other plugins and site snippets can override the symbol again, and added `nsrwc_render_glyph`, `nsrwc_load_assets` and `nsrwc_reset_currency_cache()` for integrations.
-- Fixed Gulf symbols being substituted on stores whose currency is not a Gulf currency, where the webfont is not loaded and shoppers saw empty boxes.
-- Prices in the Cart/Checkout blocks and the admin now keep the theme's font for the digits; only the currency glyph uses the bundled font.
-- Much less work per rendered price: the active currency is resolved once per request instead of on every price.
-- Added more SEO, AI and ad-platform crawlers to the list that receives the standard symbol.
-- WordPress 7.1 and WooCommerce 11.1 compatibility.
+- Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
+- Fixed the email symbol image leaking into later prices, a possible crash with multi-currency plugins, empty boxes on non-Gulf stores, and other plugins no longer being able to override the symbol.
 
 = 2.2 =
 - WordPress 7.1 and WooCommerce 11.1 compatibility.
@@ -104,4 +91,4 @@ Compatibility release. The currency symbol is no longer allowed to reach systems
 == Upgrade Notice ==
 
 = 2.3 =
-Fixes the currency symbol corrupting product feeds, REST API responses and other machine-readable output. One visible change: the store's own "Currency position" setting is now respected instead of being forced to "left with space", so stores that had chosen "right" will see the symbol move to where they configured it.
+Fixes the currency symbol corrupting product feeds and REST API output. The store's own "Currency position" setting is now respected instead of being forced to "left with space".
