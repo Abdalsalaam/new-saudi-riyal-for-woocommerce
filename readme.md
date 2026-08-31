@@ -26,7 +26,7 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 ## Features
 - Supports Saudi Riyal (SAR), UAE Dirham (AED), and Omani Rial (OMR) symbols.
 - Displays the currency symbols on the front-end, admin dashboard, WooCommerce emails, and PDF invoices.
-- Supports RTL environments by forcing the symbol to appear on the left.
+- Supports RTL environments, and respects the store's own WooCommerce "Currency position" setting.
 - Supports block-based themes (Cart/Checkout blocks).
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
 
@@ -39,6 +39,13 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - WooCommerce Multi-Currency
 
 ## Changelog
+
+### 2.3
+- Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
+- Fixed the email symbol image leaking into later prices, a possible crash with multi-currency plugins, empty boxes on non-Gulf stores, and other plugins no longer being able to override the symbol.
+
+### 2.2
+- WordPress 7.1 and WooCommerce 11.1 compatibility.
 
 ### 2.1
 - WordPress 7.0 and WooCommerce 10.8 compatibility.

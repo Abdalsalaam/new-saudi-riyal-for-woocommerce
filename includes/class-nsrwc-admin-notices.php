@@ -17,6 +17,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NSRWC_Admin_Notices {
 
 	/**
+	 * Prefix for the per-user dismissal meta keys.
+	 *
+	 * Bumping this suffix re-shows the notice to every user, including those who
+	 * had dismissed the previous one, without touching their old meta. Keep the
+	 * suffix in step with the release that changes the notice copy.
+	 *
+	 * @since 2.3
+	 *
+	 * @var string
+	 */
+	const DISMISS_META_PREFIX = 'nsrwc_notice_2_3';
+
+	/**
+	 * Meta key holding the permanent dismissal flag.
+	 *
+	 * @since 2.3
+	 *
+	 * @return string
+	 */
+	private static function permanent_dismiss_key(): string {
+		return self::DISMISS_META_PREFIX . '_permanently_dismissed';
+	}
+
+	/**
+	 * Meta key holding the timestamp of the first dismissal.
+	 *
+	 * @since 2.3
+	 *
+	 * @return string
+	 */
+	private static function first_dismiss_key(): string {
+		return self::DISMISS_META_PREFIX . '_first_dismiss_time';
+	}
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -42,11 +77,11 @@ class NSRWC_Admin_Notices {
 
 		$user_id = get_current_user_id();
 
-		if ( get_user_meta( $user_id, 'nsrwc_notice_permanently_dismissed', true ) ) {
+		if ( get_user_meta( $user_id, self::permanent_dismiss_key(), true ) ) {
 			return false;
 		}
 
-		$first_dismiss_time = get_user_meta( $user_id, 'nsrwc_notice_first_dismiss_time', true );
+		$first_dismiss_time = get_user_meta( $user_id, self::first_dismiss_key(), true );
 		if ( $first_dismiss_time ) {
 			$days_since_dismiss = ( time() - $first_dismiss_time ) / DAY_IN_SECONDS;
 			if ( $days_since_dismiss < 7 ) {
@@ -120,16 +155,16 @@ class NSRWC_Admin_Notices {
 		}
 
 		$user_id            = get_current_user_id();
-		$first_dismiss_time = get_user_meta( $user_id, 'nsrwc_notice_first_dismiss_time', true );
+		$first_dismiss_time = get_user_meta( $user_id, self::first_dismiss_key(), true );
 
 		if ( ! $first_dismiss_time ) {
-			update_user_meta( $user_id, 'nsrwc_notice_first_dismiss_time', time() );
+			update_user_meta( $user_id, self::first_dismiss_key(), time() );
 		} else {
-			update_user_meta( $user_id, 'nsrwc_notice_permanently_dismissed', true );
+			update_user_meta( $user_id, self::permanent_dismiss_key(), true );
 		}
 
 		wp_send_json_success( array( 'message' => 'Notice dismissed' ) );
-    }
+	}
 
 	/**
 	 * Enqueue admin scripts for notice dismissal.
@@ -141,7 +176,7 @@ class NSRWC_Admin_Notices {
 			return;
 		}
 
-		if ( get_user_meta( get_current_user_id(), 'nsrwc_notice_permanently_dismissed', true ) ) {
+		if ( get_user_meta( get_current_user_id(), self::permanent_dismiss_key(), true ) ) {
 			return;
 		}
 
@@ -151,7 +186,7 @@ class NSRWC_Admin_Notices {
 
 		wp_enqueue_script(
 			'nsrwc-admin-notice',
-			plugins_url( 'assets/js/admin-notice.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/js/admin-notice.js', __DIR__ ),
 			array( 'jquery' ),
 			NSRWC_VERSION,
 			true

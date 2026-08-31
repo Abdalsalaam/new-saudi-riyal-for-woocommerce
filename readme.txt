@@ -2,11 +2,12 @@
 Author: abdalsalaam
 Author URI: https://halawa.io
 Tags: SAR, AED, OMR, symbol, saudi
+Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC tested up to: 11.1
-Stable tag: 2.2
+Stable tag: 2.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -36,6 +37,10 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 - WooCommerce Multi-Currency
 
 == Changelog ==
+
+= 2.3 =
+- Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
+- Fixed the email symbol image leaking into later prices, a possible crash with multi-currency plugins, empty boxes on non-Gulf stores, and other plugins no longer being able to override the symbol.
 
 = 2.2 =
 - WordPress 7.1 and WooCommerce 11.1 compatibility.
@@ -83,3 +88,7 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 = 1.0 =
 - Initial release.
 
+== Upgrade Notice ==
+
+= 2.3 =
+Fixes the currency symbol corrupting product feeds and REST API output. The store's own "Currency position" setting is now respected instead of being forced to "left with space".
