@@ -129,7 +129,7 @@ class NSRWC_Admin_Notices {
 		}
 
 		wp_send_json_success( array( 'message' => 'Notice dismissed' ) );
-    }
+	}
 
 	/**
 	 * Enqueue admin scripts for notice dismissal.
@@ -151,7 +151,7 @@ class NSRWC_Admin_Notices {
 
 		wp_enqueue_script(
 			'nsrwc-admin-notice',
-			plugins_url( 'assets/js/admin-notice.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/js/admin-notice.js', __DIR__ ),
 			array( 'jquery' ),
 			NSRWC_VERSION,
 			true

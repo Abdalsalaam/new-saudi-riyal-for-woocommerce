@@ -1,3 +1,12 @@
+/**
+ * Gulf currency glyphs.
+ *
+ * The `unicode-range` descriptor is what makes this safe to apply broadly: the
+ * browser pulls the webfont in only for the Gulf codepoints and leaves every
+ * other character — digits, Arabic text, other currency symbols — to the next
+ * font in the stack. It also means the font file is never downloaded on a page
+ * that has no Gulf price on it.
+ */
 @font-face {
     font-family: 'gulf-currencies';
     src: url('../fonts/gulf-currencies.eot');
@@ -8,26 +17,56 @@
     font-weight: normal;
     font-style: normal;
     font-display: block;
-    unicode-range: U+E001, U+E002, U+20C1, U+E900;
+    unicode-range: U+20C1, U+E001, U+E002, U+E900;
 }
 
-/* Generic class for elements containing Gulf currency symbols */
+/*
+ * WooCommerce already wraps the symbol in .woocommerce-Price-currencySymbol, so
+ * most prices need no JavaScript at all. The JS-applied classes cover the places
+ * that render a price without that wrapper (Cart/Checkout blocks, React admin).
+ *
+ * The fallback stack matters because the JS marks the *parent* of the matched
+ * text node, which often also holds the digits.
+ */
+.woocommerce-Price-currencySymbol,
 .gulf-currency,
+.nsrwc-symbol,
 /* Backward compatibility with old class name */
-.sar-currency-symbol{
-    font-family: 'gulf-currencies', serif !important;
+.sar-currency-symbol {
+    font-family: 'gulf-currencies', var(--nsrwc-font-stack, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif) !important;
     speak: never;
     font-style: normal;
-    font-weight: normal;
+    font-weight: inherit;
     font-variant: normal;
     text-transform: none;
-    line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+/*
+ * Separates the glyph from the amount. Before 2.3 this was done by forcing
+ * WooCommerce's currency position option to "left_space", which overrode the
+ * merchant's own setting and corrupted product feeds that parse the rendered
+ * price format. Doing it in CSS keeps the store setting intact.
+ *
+ * The side depends on the store's currency position, which is published as a
+ * body class: the amount is a bare text node, so a selector like :last-child
+ * cannot tell whether the symbol comes before or after it.
+ * The *_space positions already emit a real space, so they get no margin.
+ */
+.nsrwc-pos-left .woocommerce-Price-currencySymbol,
+.nsrwc-pos-left .gulf-currency,
+.nsrwc-pos-left .nsrwc-symbol {
+    margin-inline-end: 0.15em;
+}
+
+.nsrwc-pos-right .woocommerce-Price-currencySymbol,
+.nsrwc-pos-right .gulf-currency,
+.nsrwc-pos-right .nsrwc-symbol {
+    margin-inline-start: 0.15em;
+}
 
 /* WooCommerce Admin Dashboard */
-.gulf-currency-dashboard{
-    font-family: 'gulf-currencies', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+.gulf-currency-dashboard {
+    font-family: 'gulf-currencies', var(--nsrwc-font-stack, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif) !important;
 }

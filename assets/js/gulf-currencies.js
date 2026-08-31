@@ -1,8 +1,17 @@
 /**
  * Gulf Currencies Symbol Fix for WooCommerce.
  *
- * Adds 'gulf-currency' class to the direct parent element of Gulf currency symbols
- * to enable proper font rendering.
+ * WooCommerce's classic templates wrap the symbol in
+ * .woocommerce-Price-currencySymbol, which the stylesheet targets directly.
+ * The Cart/Checkout blocks and the React admin screens render a price as one
+ * flat text node instead, so there is nothing to target. This script finds
+ * those nodes and tags their parent.
+ *
+ * Because that parent usually holds the digits too, tagging it must not throw
+ * away the theme's font. The element's own resolved stack is captured into a
+ * custom property first, and the stylesheet prepends the glyph font to it — so
+ * only the Gulf codepoints (see the @font-face unicode-range) come from the
+ * bundled font and everything else keeps rendering exactly as the theme meant.
  */
 ( function() {
 	'use strict';
@@ -24,16 +33,30 @@
 
 	// Debounce state
 	let pending = [];
-	let rafId = null;
+	let scheduled = false;
 
 	/**
-	 * Mark element with currency class.
+	 * Mark element with currency class, preserving its inherited font stack.
 	 */
 	function markElement( el ) {
-		if ( el && el.classList && ! processed.has( el ) ) {
-			el.classList.add( currencyClass );
-			processed.add( el );
+		if ( ! el || ! el.classList || processed.has( el ) ) {
+			return;
 		}
+
+		// Capture the stack the element already resolves to, before our class
+		// lands, so non-Gulf characters in the same element are untouched.
+		try {
+			const inherited = window.getComputedStyle( el ).fontFamily;
+			if ( inherited && inherited.indexOf( 'gulf-currencies' ) === -1 ) {
+				el.style.setProperty( '--nsrwc-font-stack', inherited );
+			}
+		} catch ( e ) {
+			// getComputedStyle can throw on detached nodes; the stylesheet's
+			// own fallback stack covers that case.
+		}
+
+		el.classList.add( currencyClass );
+		processed.add( el );
 	}
 
 	/**
@@ -57,10 +80,10 @@
 	}
 
 	/**
-	 * Process pending nodes in batched animation frame.
+	 * Process pending nodes in a batch.
 	 */
 	function flushPending() {
-		rafId = null;
+		scheduled = false;
 		const nodes = pending;
 		pending = [];
 
@@ -76,11 +99,21 @@
 
 	/**
 	 * Schedule pending nodes processing.
+	 *
+	 * requestAnimationFrame is throttled to a standstill in background tabs, so
+	 * a timeout runs alongside it: whichever fires first does the work, and
+	 * flushPending is idempotent.
 	 */
 	function schedulePending() {
-		if ( ! rafId ) {
-			rafId = requestAnimationFrame( flushPending );
+		if ( scheduled ) {
+			return;
 		}
+		scheduled = true;
+
+		if ( typeof window.requestAnimationFrame === 'function' ) {
+			window.requestAnimationFrame( flushPending );
+		}
+		window.setTimeout( flushPending, 50 );
 	}
 
 	/**
