@@ -112,7 +112,7 @@ function nsrwc_get_mawsim_settings_row(): array {
 		'title' => __( 'Seasonal sales', 'saudi-riyal-symbol-for-woocommerce' ),
 		'text'  => sprintf(
 			/* translators: %s: "Install Mawsim" link */
-			__( 'Ramadan, Eid and White Friday bring in most of a Gulf store\'s revenue. Mawsim, from the developer of this plugin, ranks the upcoming occasions by what they earned your store before and sets a sales goal to match. %s, free on WordPress.org.', 'saudi-riyal-symbol-for-woocommerce' ),
+			__( 'Mawsim, from the developer of this plugin, ranks upcoming occasions such as Ramadan, Eid and White Friday by what they earned your store before, and sets a sales goal to match. %s, free on WordPress.org.', 'saudi-riyal-symbol-for-woocommerce' ),
 			nsrwc_get_mawsim_install_anchor( __( 'Install Mawsim', 'saudi-riyal-symbol-for-woocommerce' ) )
 		),
 	);

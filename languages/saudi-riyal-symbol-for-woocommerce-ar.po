@@ -51,20 +51,20 @@ msgstr "مبيعات المواسم"
 
 #: includes/nsrwc-mawsim.php
 #, php-format
-msgid "Ramadan, Eid and White Friday bring in most of a Gulf store's revenue. Mawsim, from the developer of this plugin, ranks the upcoming occasions by what they earned your store before and sets a sales goal to match. %s, free on WordPress.org."
-msgstr "رمضان والعيد والجمعة البيضاء تحقق معظم إيرادات المتاجر الخليجية. إضافة موسم، من مطور هذه الإضافة، ترتب المناسبات القادمة حسب ما حققته لمتجرك سابقاً وتضع هدف مبيعات يناسبها. %s، مجاناً على WordPress.org."
+msgid "Mawsim, from the developer of this plugin, ranks upcoming occasions such as Ramadan, Eid and White Friday by what they earned your store before, and sets a sales goal to match. %s, free on WordPress.org."
+msgstr "إضافة موسم، من مطور هذه الإضافة، ترتب المناسبات القادمة مثل رمضان والعيد والجمعة البيضاء حسب ما حققته لمتجرك سابقاً، وتضع هدف مبيعات يناسبها. %s، مجاناً على WordPress.org."
 
 #: includes/nsrwc-mawsim.php
 msgid "Install Mawsim"
 msgstr "ثبّت موسم"
 
 #: includes/class-nsrwc-admin-notices.php
-msgid "Which occasion will hit your sales goal?"
-msgstr "أي مناسبة ستحقق هدف مبيعاتك؟"
+msgid "Sales goals for the Gulf shopping calendar"
+msgstr "أهداف مبيعات لتقويم التسوق الخليجي"
 
 #: includes/class-nsrwc-admin-notices.php
-msgid "Ramadan, Eid, Founding Day and White Friday decide the year for most Gulf stores. Mawsim, a free plugin from the developer of this plugin, sets a sales goal, ranks the upcoming occasions by what they earned your store before, and tells you when to start preparing."
-msgstr "رمضان والعيد ويوم التأسيس والجمعة البيضاء تحسم السنة لمعظم المتاجر الخليجية. إضافة موسم، إضافة مجانية من مطور هذه الإضافة، تضع هدف مبيعات، وترتب المناسبات القادمة حسب ما حققته لمتجرك سابقاً، وتخبرك متى تبدأ الاستعداد."
+msgid "Mawsim is a free plugin from the developer of this plugin. It sets a sales goal, ranks the upcoming occasions (Ramadan, Eid, Founding Day, White Friday) by what they earned your store before, and shows when to start preparing."
+msgstr "موسم إضافة مجانية من مطور هذه الإضافة. تضع هدف مبيعات، وترتب المناسبات القادمة (رمضان، العيد، يوم التأسيس، الجمعة البيضاء) حسب ما حققته لمتجرك سابقاً، وتوضح متى تبدأ الاستعداد."
 
 #: includes/class-nsrwc-admin-notices.php
 msgid "Install Mawsim (free)"

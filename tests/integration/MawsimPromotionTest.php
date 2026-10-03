@@ -98,8 +98,14 @@ class MawsimPromotionTest extends WP_UnitTestCase {
 		$this->assertSame( '', $this->render_notice() );
 	}
 
-	public function test_notice_is_limited_to_the_dashboard_plugins_and_woocommerce_screens(): void {
+	public function test_notice_is_limited_to_the_dashboard_plugins_and_settings_screens(): void {
 		set_current_screen( 'edit-post' );
+		$this->assertSame( '', $this->render_notice() );
+
+		set_current_screen( 'woocommerce_page_wc-orders' );
+		$this->assertSame( '', $this->render_notice(), 'daily work screens stay clear' );
+
+		set_current_screen( 'edit-product' );
 		$this->assertSame( '', $this->render_notice() );
 
 		set_current_screen( 'plugins' );
@@ -140,7 +146,49 @@ class MawsimPromotionTest extends WP_UnitTestCase {
 	}
 
 	public function test_mawsim_detection_looks_for_the_plugin_file(): void {
-		$this->assertFalse( nsrwc_is_mawsim_installed(), 'wp-env has no Mawsim' );
+		$dir  = trailingslashit( WP_PLUGIN_DIR ) . 'mawsim';
+		$file = $dir . '/mawsim.php';
+
+		if ( file_exists( $file ) ) {
+			$this->markTestSkipped( 'Mawsim is installed in this environment.' );
+		}
+
+		$this->assertFalse( nsrwc_is_mawsim_installed() );
 		$this->assertTrue( nsrwc_promote_mawsim() );
+
+		if ( ! wp_mkdir_p( $dir ) || false === file_put_contents( $file, "<?php\n" ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			$this->markTestSkipped( 'Plugin directory is not writable.' );
+		}
+
+		try {
+			$this->assertTrue( nsrwc_is_mawsim_installed() );
+			$this->assertFalse( nsrwc_promote_mawsim() );
+		} finally {
+			unlink( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+			rmdir( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+		}
+	}
+
+	public function test_settings_row_links_to_wordpress_org_for_users_who_cannot_install_plugins(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'shop_manager' ) ) );
+
+		$row = nsrwc_get_mawsim_settings_row();
+
+		$this->assertStringContainsString( 'https://wordpress.org/plugins/mawsim/', $row['text'] );
+		$this->assertStringNotContainsString( 'plugin-install.php', $row['text'] );
+	}
+
+	public function test_row_sits_right_after_the_symbol_fields(): void {
+		$settings = nsrwc_add_symbol_settings(
+			array(
+				array( 'id' => 'woocommerce_currency' ),
+				array( 'id' => 'woocommerce_currency_pos' ),
+				array( 'id' => 'woocommerce_price_thousand_sep' ),
+			)
+		);
+
+		$this->assertSame( 'nsrwc_symbol_color', $settings[3]['id'] );
+		$this->assertSame( 'info', $settings[4]['type'] );
+		$this->assertSame( 'woocommerce_price_thousand_sep', $settings[5]['id'] );
 	}
 }
