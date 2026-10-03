@@ -1,0 +1,186 @@
+<?php
+/**
+ * Symbol size and color settings.
+ *
+ * Two fields added to WooCommerce > Settings > General, directly under "Currency
+ * position", so the merchant configures the symbol where the rest of the currency
+ * options already live. Both default to empty, which means "leave the symbol as the
+ * theme renders it", so a store that never touches them behaves exactly as before.
+ *
+ * @package Saudi_Riyal_Symbol_for_WooCommerce
+ * @since   2.4
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Smallest accepted symbol size, as a percentage of the price text.
+ */
+const NSRWC_SYMBOL_SIZE_MIN = 50;
+
+/**
+ * Largest accepted symbol size, as a percentage of the price text.
+ */
+const NSRWC_SYMBOL_SIZE_MAX = 200;
+
+/**
+ * The size that means "do nothing": the glyph renders at the price text size.
+ */
+const NSRWC_SYMBOL_SIZE_DEFAULT = 100;
+
+/**
+ * Field definitions, in WooCommerce settings API format.
+ *
+ * @since 2.4
+ *
+ * @return array[]
+ */
+function nsrwc_get_symbol_settings_fields(): array {
+	return array(
+		array(
+			'id'                => 'nsrwc_symbol_size',
+			'title'             => __( 'Currency symbol size', 'saudi-riyal-symbol-for-woocommerce' ),
+			'desc'              => sprintf(
+				/* translators: 1: minimum percentage, 2: maximum percentage */
+				__( 'Size of the Gulf currency symbol as a percentage of the price text, from %1$d to %2$d. Leave empty to keep the default size.', 'saudi-riyal-symbol-for-woocommerce' ),
+				NSRWC_SYMBOL_SIZE_MIN,
+				NSRWC_SYMBOL_SIZE_MAX
+			),
+			'desc_tip'          => true,
+			'type'              => 'number',
+			'placeholder'       => (string) NSRWC_SYMBOL_SIZE_DEFAULT,
+			'suffix'            => '%',
+			'css'               => 'width: 80px;',
+			'default'           => '',
+			'custom_attributes' => array(
+				'min'  => NSRWC_SYMBOL_SIZE_MIN,
+				'max'  => NSRWC_SYMBOL_SIZE_MAX,
+				'step' => 1,
+			),
+		),
+		array(
+			'id'       => 'nsrwc_symbol_color',
+			'title'    => __( 'Currency symbol color', 'saudi-riyal-symbol-for-woocommerce' ),
+			'desc'     => __( 'Color of the Gulf currency symbol on your store pages. Leave empty to match the price text. Emails and PDF invoices show the symbol as an image, so the color does not apply there. Prices inside colored buttons keep the button text color in mind.', 'saudi-riyal-symbol-for-woocommerce' ),
+			'desc_tip' => true,
+			'type'     => 'color',
+			'default'  => '',
+		),
+	);
+}
+
+/**
+ * Insert the fields after "Currency position" on the General tab.
+ *
+ * Only for stores that actually render the glyph: on a USD store the fields would
+ * configure something the shopper never sees.
+ *
+ * @since 2.4
+ *
+ * @param array $settings General tab settings.
+ *
+ * @return array
+ */
+function nsrwc_add_symbol_settings( $settings ) {
+	if ( ! is_array( $settings ) || ! nsrwc_should_load_assets() ) {
+		return $settings;
+	}
+
+	// Positional lookup: the array keys WooCommerce builds are not guaranteed to be
+	// sequential, and array_splice() works on positions, not keys.
+	$position = array_search( 'woocommerce_currency_pos', array_column( $settings, 'id' ), true );
+
+	if ( false === $position ) {
+		return $settings;
+	}
+
+	array_splice( $settings, $position + 1, 0, nsrwc_get_symbol_settings_fields() );
+
+	return $settings;
+}
+
+add_filter( 'woocommerce_general_settings', 'nsrwc_add_symbol_settings' );
+
+/**
+ * Normalise a raw size value to a stored one.
+ *
+ * Empty, non-numeric, non-positive and default (100) inputs all store as an empty
+ * string, so "no customisation" has exactly one representation. Anything else is an
+ * integer clamped into the accepted range.
+ *
+ * @since 2.4
+ *
+ * @param mixed $value Raw value.
+ *
+ * @return int|string Integer size, or '' for the default.
+ */
+function nsrwc_sanitize_symbol_size( $value ) {
+	if ( is_array( $value ) || ! is_numeric( $value ) ) {
+		return '';
+	}
+
+	$size = (int) $value;
+
+	if ( $size <= 0 ) {
+		return '';
+	}
+
+	$size = max( NSRWC_SYMBOL_SIZE_MIN, min( NSRWC_SYMBOL_SIZE_MAX, $size ) );
+
+	return NSRWC_SYMBOL_SIZE_DEFAULT === $size ? '' : $size;
+}
+
+add_filter( 'woocommerce_admin_settings_sanitize_option_nsrwc_symbol_size', 'nsrwc_sanitize_symbol_size' );
+
+/**
+ * Normalise a raw color value to a stored one.
+ *
+ * Only 3- or 6-digit hex colors are stored. The value ends up inside a CSS rule, so
+ * anything else is dropped rather than escaped.
+ *
+ * @since 2.4
+ *
+ * @param mixed $value Raw value.
+ *
+ * @return string Hex color, or '' for none.
+ */
+function nsrwc_sanitize_symbol_color( $value ) {
+	if ( ! is_string( $value ) ) {
+		return '';
+	}
+
+	$color = sanitize_hex_color( trim( $value ) );
+
+	return is_string( $color ) ? $color : '';
+}
+
+add_filter( 'woocommerce_admin_settings_sanitize_option_nsrwc_symbol_color', 'nsrwc_sanitize_symbol_color' );
+
+/**
+ * Configured symbol size.
+ *
+ * Re-sanitised on read so a value written outside the settings form (REST, WP-CLI,
+ * a migration) cannot produce invalid CSS.
+ *
+ * @since 2.4
+ *
+ * @return int|null Percentage of the price text, or null for the default.
+ */
+function nsrwc_get_symbol_size() {
+	$size = nsrwc_sanitize_symbol_size( get_option( 'nsrwc_symbol_size', '' ) );
+
+	return '' === $size ? null : $size;
+}
+
+/**
+ * Configured symbol color.
+ *
+ * @since 2.4
+ *
+ * @return string Hex color, or '' when the symbol should match the price text.
+ */
+function nsrwc_get_symbol_color(): string {
+	return nsrwc_sanitize_symbol_color( get_option( 'nsrwc_symbol_color', '' ) );
+}

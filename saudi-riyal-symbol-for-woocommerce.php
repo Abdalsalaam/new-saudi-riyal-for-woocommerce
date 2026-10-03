@@ -649,6 +649,11 @@ function nsrwc_is_seo_or_llm_bot(): bool {
 }
 
 /**
+ * Symbol size and color settings.
+ */
+require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-settings.php';
+
+/**
  * Load admin notices and marketing class.
  */
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-nsrwc-admin-notices.php';
