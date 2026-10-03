@@ -2,10 +2,9 @@
 	"phpVersion": "7.4",
 	"port": 8895,
 	"testsPort": 8896,
-	"plugins": [
-		"."
-	],
+	"plugins": [],
 	"mappings": {
+		"wp-content/plugins/saudi-riyal-symbol-for-woocommerce": ".",
 		"wp-content/plugins/woocommerce": "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip"
 	},
 	"config": {
