@@ -87,6 +87,8 @@ function nsrwc_load_textdomain() {
 
 add_action( 'plugins_loaded', 'nsrwc_load_textdomain' );
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-settings.php';
+
 /**
  * Get the current active Gulf currency code if applicable.
  *
@@ -303,6 +305,8 @@ function nsrwc_enqueue_font_css() {
 		array(),
 		NSRWC_VERSION
 	);
+
+	nsrwc_add_custom_symbol_css();
 }
 
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_font_css' );
@@ -647,11 +651,6 @@ function nsrwc_is_seo_or_llm_bot(): bool {
 
 	return $is_bot;
 }
-
-/**
- * Symbol size and color settings.
- */
-require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-settings.php';
 
 /**
  * Load admin notices and marketing class.

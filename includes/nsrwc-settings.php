@@ -184,3 +184,93 @@ function nsrwc_get_symbol_size() {
 function nsrwc_get_symbol_color(): string {
 	return nsrwc_sanitize_symbol_color( get_option( 'nsrwc_symbol_color', '' ) );
 }
+
+/**
+ * CSS that applies the configured size and color.
+ *
+ * Returns an empty string for default settings, so a store that never changed them
+ * gets exactly the stylesheet it had before.
+ *
+ * Size uses the `size-adjust` descriptor on a second @font-face for the same family.
+ * It matches the face in style.css on every descriptor that takes part in font
+ * matching (family, weight, style, unicode-range), so browsers prefer the later one
+ * and only the Gulf glyphs scale. Digits, the theme font and the line box they share
+ * are untouched, which is what makes it work inside flat block-rendered prices too.
+ * Browsers without `size-adjust` ignore it and show the default size.
+ *
+ * Color can only be applied to an element that holds nothing but the glyph:
+ * WooCommerce's own symbol wrapper and the wrapper the plugin's script adds. The
+ * parent-tagged `.gulf-currency` elements also hold the digits, so they stay out.
+ *
+ * @since 2.4
+ *
+ * @param int|null $size  Percentage of the price text, or null for the default.
+ * @param string   $color Hex color, or '' for none.
+ *
+ * @return string
+ */
+function nsrwc_get_custom_symbol_css( $size, string $color ): string {
+	$css = '';
+
+	if ( is_int( $size ) && NSRWC_SYMBOL_SIZE_DEFAULT !== $size ) {
+		$plugin_file = dirname( __DIR__ ) . '/saudi-riyal-symbol-for-woocommerce.php';
+		$font        = static function ( string $extension ) use ( $plugin_file ): string {
+			return esc_url( plugins_url( 'assets/fonts/gulf-currencies.' . $extension, $plugin_file ) );
+		};
+
+		// Keep in step with the @font-face in assets/css/style.css.
+		$css .= "@font-face {\n"
+			. "\tfont-family: 'gulf-currencies';\n"
+			. "\tsrc: url('" . $font( 'woff' ) . "') format('woff'),\n"
+			. "\t\turl('" . $font( 'ttf' ) . "') format('truetype'),\n"
+			. "\t\turl('" . $font( 'svg' ) . "') format('svg');\n"
+			. "\tfont-weight: normal;\n"
+			. "\tfont-style: normal;\n"
+			. "\tfont-display: block;\n"
+			. "\tunicode-range: U+20C1, U+E001, U+E002, U+E900;\n"
+			. "\tsize-adjust: " . $size . "%;\n"
+			. "}\n";
+	}
+
+	if ( '' !== $color ) {
+		$selectors = array( '.woocommerce-Price-currencySymbol', '.nsrwc-symbol', '.sar-currency-symbol' );
+
+		$css .= implode( ",\n", $selectors ) . " {\n\tcolor: " . $color . ";\n}\n";
+
+		// A struck-through regular price is usually muted by the theme; a brand-colored
+		// glyph next to grey digits would look like a mistake, so it inherits there.
+		$css .= implode(
+			",\n",
+			array_map(
+				static function ( string $selector ): string {
+					return 'del ' . $selector;
+				},
+				$selectors
+			)
+		) . " {\n\tcolor: inherit;\n}\n";
+	}
+
+	return $css;
+}
+
+/**
+ * Attach the custom CSS to the plugin stylesheet on the front end.
+ *
+ * Admin screens are left alone: the settings describe how the storefront should
+ * look, and a brand color would fight the admin color schemes and status badges.
+ *
+ * @since 2.4
+ *
+ * @return void
+ */
+function nsrwc_add_custom_symbol_css() {
+	if ( is_admin() || ! wp_style_is( 'gulf-currencies-style', 'enqueued' ) ) {
+		return;
+	}
+
+	$css = nsrwc_get_custom_symbol_css( nsrwc_get_symbol_size(), nsrwc_get_symbol_color() );
+
+	if ( '' !== $css ) {
+		wp_add_inline_style( 'gulf-currencies-style', $css );
+	}
+}
