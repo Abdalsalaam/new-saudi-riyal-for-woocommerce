@@ -1,0 +1,15 @@
+{
+	"phpVersion": "7.4",
+	"port": 8895,
+	"testsPort": 8896,
+	"plugins": [
+		"."
+	],
+	"mappings": {
+		"wp-content/plugins/woocommerce": "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip"
+	},
+	"config": {
+		"WP_DEBUG": true,
+		"SCRIPT_DEBUG": true
+	}
+}

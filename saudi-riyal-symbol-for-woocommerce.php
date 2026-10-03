@@ -131,7 +131,7 @@ function nsrwc_get_current_gulf_currency() {
 
 	// Support for WooCommerce Multi-Currency.
 	if ( false === $resolved && class_exists( 'WOOMC\\Model\\Currency' ) ) {
-		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() );
+		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Reading WooCommerce's own filter, not declaring a hook.
 		if ( in_array( $current_currency, $gulf_currencies, true ) ) {
 			$resolved = $current_currency;
 		}
