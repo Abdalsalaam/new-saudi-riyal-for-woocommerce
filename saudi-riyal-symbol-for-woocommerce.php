@@ -3,7 +3,7 @@
  * Plugin Name: Gulf currencies Symbols for WooCommerce - رمز الريال السعودي والدرهم الإماراتي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, in WooCommerce.
- * Version: 2.3
+ * Version: 2.4
  * Author: Abdalsalaam Halawa
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
@@ -37,7 +37,7 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '2.3';
+const NSRWC_VERSION = '2.4';
 
 /**
  * Gulf currencies configuration.
@@ -87,6 +87,9 @@ function nsrwc_load_textdomain() {
 
 add_action( 'plugins_loaded', 'nsrwc_load_textdomain' );
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-mawsim.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-settings.php';
+
 /**
  * Get the current active Gulf currency code if applicable.
  *
@@ -131,7 +134,7 @@ function nsrwc_get_current_gulf_currency() {
 
 	// Support for WooCommerce Multi-Currency.
 	if ( false === $resolved && class_exists( 'WOOMC\\Model\\Currency' ) ) {
-		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() );
+		$current_currency = apply_filters( 'woocommerce_currency', get_woocommerce_currency() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Reading WooCommerce's own filter, not declaring a hook.
 		if ( in_array( $current_currency, $gulf_currencies, true ) ) {
 			$resolved = $current_currency;
 		}
@@ -303,6 +306,8 @@ function nsrwc_enqueue_font_css() {
 		array(),
 		NSRWC_VERSION
 	);
+
+	nsrwc_add_custom_symbol_css();
 }
 
 add_action( 'wp_enqueue_scripts', 'nsrwc_enqueue_font_css' );
@@ -441,7 +446,7 @@ function nsrwc_replace_gulf_currency_symbol( $currency_symbol, $currency ) {
 			return $currency_symbol;
 		}
 
-		return '<img src="' . esc_url( plugins_url( 'assets/icons/png/' . $config['png'], __FILE__ ) ) . '" alt="' . esc_attr( $currency ) . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
+		return '<img src="' . esc_url( plugins_url( 'assets/icons/png/' . $config['png'], __FILE__ ) ) . '" alt="' . esc_attr( $currency ) . '" style="vertical-align: middle; margin: 0 !important; height: ' . esc_attr( nsrwc_get_symbol_image_height() ) . '; font-size: inherit !important;">';
 	}
 
 	return $config['char'];

@@ -29,6 +29,20 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - Supports RTL environments, and respects the store's own WooCommerce "Currency position" setting.
 - Supports block-based themes (Cart/Checkout blocks).
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
+- Symbol size and color settings under WooCommerce > Settings > General > Currency options.
+
+## More from the developer
+- [Mawsim - Sales Goals & Marketing Calendar for WooCommerce](https://wordpress.org/plugins/mawsim/): set a sales goal, see which upcoming occasions (Ramadan, Eid, Founding Day, White Friday) can get you there, and know when to start preparing. Free.
+
+## Development
+
+```bash
+composer install && npm install
+composer lint        # WordPress coding standards, PHP 7.4 compatibility
+npm run test:js      # browser script, in jsdom
+npx wp-env start     # WordPress + WooCommerce on http://localhost:8895
+composer test        # PHPUnit against the running wp-env
+```
 
 ## Compatible With
 - WooCommerce emails
@@ -39,6 +53,12 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - WooCommerce Multi-Currency
 
 ## Changelog
+
+### 2.4
+- Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
+- The Cart and Checkout blocks now get the same size and color as the rest of the store.
+- Added a "Settings" link on the Plugins screen. The plugin removes its options when deleted.
+- The admin notice now introduces Mawsim, the developer's free sales-goals plugin, with a link to install it from the plugin details screen. It is shown once, only on the dashboard, Plugins and WooCommerce settings screens, and never once Mawsim is installed.
 
 ### 2.3
 - Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).

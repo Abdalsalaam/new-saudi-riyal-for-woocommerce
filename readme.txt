@@ -7,7 +7,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC tested up to: 11.1
-Stable tag: 2.3
+Stable tag: 2.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -27,6 +27,7 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 - Supports RTL environments by forcing the symbol to appear on the left.
 - Supports block-based themes (Cart/Checkout blocks).
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
+- Symbol size and color settings under WooCommerce > Settings > General > Currency options.
 
 == Compatible With ==
 - WooCommerce emails
@@ -36,7 +37,16 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 - Multi Currency for WooCommerce (VillaTheme)
 - WooCommerce Multi-Currency
 
+== More from the developer ==
+- [Mawsim - Sales Goals & Marketing Calendar for WooCommerce](https://wordpress.org/plugins/mawsim/): set a sales goal, see which upcoming occasions (Ramadan, Eid, Founding Day, White Friday) can get you there, and know when to start preparing. Free.
+
 == Changelog ==
+
+= 2.4 =
+- Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
+- The Cart and Checkout blocks now get the same size and color as the rest of the store.
+- Added a "Settings" link on the Plugins screen. The plugin removes its options when deleted.
+- The admin notice now introduces Mawsim, the developer's free sales-goals plugin, with a link to install it from the plugin details screen. It is shown once, only on the dashboard, Plugins and WooCommerce settings screens, and never once Mawsim is installed.
 
 = 2.3 =
 - Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
@@ -89,6 +99,9 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 - Initial release.
 
 == Upgrade Notice ==
+
+= 2.4 =
+New: set the symbol size and color under WooCommerce > Settings > General > Currency options. Nothing changes until you do.
 
 = 2.3 =
 Fixes the currency symbol corrupting product feeds and REST API output. The store's own "Currency position" setting is now respected instead of being forced to "left with space".

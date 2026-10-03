@@ -1,0 +1,15 @@
+{
+	"name": "saudi-riyal-symbol-for-woocommerce",
+	"private": true,
+	"description": "Adds the Saudi Riyal, UAE Dirham and Omani Rial symbols to WooCommerce.",
+	"license": "GPL-3.0-or-later",
+	"engines": {
+		"node": ">=22"
+	},
+	"scripts": {
+		"test:js": "node --test \"tests/js/**/*.test.js\""
+	},
+	"devDependencies": {
+		"jsdom": "^26.1.0"
+	}
+}
