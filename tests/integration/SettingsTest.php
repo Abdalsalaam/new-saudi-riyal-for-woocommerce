@@ -130,6 +130,8 @@ class SettingsTest extends WP_UnitTestCase {
 	}
 
 	public function test_insertion_survives_entries_without_an_id_and_gapped_keys(): void {
+		add_filter( 'nsrwc_promote_mawsim', '__return_false' );
+
 		$settings = array(
 			3  => array( 'type' => 'title' ),
 			7  => array( 'id' => 'woocommerce_currency' ),
@@ -143,6 +145,8 @@ class SettingsTest extends WP_UnitTestCase {
 			},
 			nsrwc_add_symbol_settings( $settings )
 		);
+
+		remove_filter( 'nsrwc_promote_mawsim', '__return_false' );
 
 		$this->assertSame(
 			array( '(no id)', 'woocommerce_currency', 'woocommerce_currency_pos', 'nsrwc_symbol_size', 'nsrwc_symbol_color', 'woocommerce_price_thousand_sep' ),

@@ -87,6 +87,7 @@ function nsrwc_load_textdomain() {
 
 add_action( 'plugins_loaded', 'nsrwc_load_textdomain' );
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-mawsim.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/nsrwc-settings.php';
 
 /**

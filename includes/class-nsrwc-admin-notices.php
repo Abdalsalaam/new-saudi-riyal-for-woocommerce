@@ -27,7 +27,7 @@ class NSRWC_Admin_Notices {
 	 *
 	 * @var string
 	 */
-	const DISMISS_META_PREFIX = 'nsrwc_notice_2_3';
+	const DISMISS_META_PREFIX = 'nsrwc_notice_2_4';
 
 	/**
 	 * Meta key holding the permanent dismissal flag.
@@ -71,7 +71,11 @@ class NSRWC_Admin_Notices {
 			return false;
 		}
 
-		if ( ! nsrwc_is_gulf_currency() ) {
+		if ( ! nsrwc_is_gulf_currency() || ! nsrwc_promote_mawsim() ) {
+			return false;
+		}
+
+		if ( ! $this->is_relevant_screen() ) {
 			return false;
 		}
 
@@ -93,7 +97,28 @@ class NSRWC_Admin_Notices {
 	}
 
 	/**
-	 * Display support and information notice.
+	 * Screens where a merchant is thinking about the store, not writing a post.
+	 *
+	 * @since 2.4
+	 *
+	 * @return bool
+	 */
+	private function is_relevant_screen(): bool {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		if ( ! $screen ) {
+			return false;
+		}
+
+		if ( in_array( $screen->id, array( 'dashboard', 'plugins' ), true ) ) {
+			return true;
+		}
+
+		return function_exists( 'wc_get_screen_ids' ) && in_array( $screen->id, wc_get_screen_ids(), true );
+	}
+
+	/**
+	 * Display the Mawsim notice, with the support link kept underneath.
 	 *
 	 * @return void
 	 */
@@ -102,38 +127,36 @@ class NSRWC_Admin_Notices {
 			return;
 		}
 
+		$allowed = array(
+			'a' => array(
+				'href'   => true,
+				'class'  => true,
+				'target' => true,
+				'rel'    => true,
+			),
+		);
+
 		?>
 		<div class="notice notice-info is-dismissible nsrwc-admin-notice" data-notice="nsrwc-support-notice">
 			<p>
-				<strong><?php esc_html_e( 'Saudi Riyal Symbol for WooCommerce', 'saudi-riyal-symbol-for-woocommerce' ); ?></strong>
+				<strong><?php esc_html_e( 'Which occasion will hit your sales goal?', 'saudi-riyal-symbol-for-woocommerce' ); ?></strong>
 			</p>
 			<p>
-				<?php esc_html_e( 'WooCommerce will not implement the new Saudi Riyal symbol soon. I will continue to maintain this plugin and fix any issues you encounter.', 'saudi-riyal-symbol-for-woocommerce' ); ?>
+				<?php esc_html_e( 'Ramadan, Eid, Founding Day and White Friday decide the year for most Gulf stores. Mawsim, a free plugin from the developer of this plugin, sets a sales goal, ranks the upcoming occasions by what they earned your store before, and tells you when to start preparing.', 'saudi-riyal-symbol-for-woocommerce' ); ?>
 			</p>
 			<p>
-				<?php
-				printf(
-					/* translators: %s: contact link */
-					esc_html__( 'If you experience any issues, please %s.', 'saudi-riyal-symbol-for-woocommerce' ),
-					'<a href="https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce/" target="_blank">' . esc_html__( 'get support', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>'
-				);
-				?>
-			</p>
-			<p style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-				<a href="https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce/reviews/#new-post" target="_blank" class="button button-primary" style="margin-inline-end: 10px;">
-					⭐ <?php esc_html_e( 'Leave a 5-Star Review', 'saudi-riyal-symbol-for-woocommerce' ); ?>
-				</a>
-				<a href="https://halawa.io" target="_blank" class="button button-secondary">
-					💼 <?php esc_html_e( 'Hire Me for Custom Development', 'saudi-riyal-symbol-for-woocommerce' ); ?>
+				<?php echo wp_kses( nsrwc_get_mawsim_install_anchor( __( 'Install Mawsim (free)', 'saudi-riyal-symbol-for-woocommerce' ), 'button button-primary' ), $allowed ); ?>
+				<a href="https://mawsim.store/?utm_source=gulf-currencies-plugin&amp;utm_medium=admin-notice" target="_blank" rel="noopener" class="button button-secondary" style="margin-inline-start: 6px;">
+					<?php esc_html_e( 'See how it works', 'saudi-riyal-symbol-for-woocommerce' ); ?>
 				</a>
 			</p>
-			<p style="margin-top: 10px;">
+			<p>
 				<em>
 					<?php
 					printf(
-						/* translators: %s: developer link */
-						esc_html__( 'Developed by %s - Available for WordPress & WooCommerce custom development projects.', 'saudi-riyal-symbol-for-woocommerce' ),
-						'<a href="https://halawa.io" target="_blank"><strong>Abdalsalaam Halawa</strong></a>'
+						/* translators: %s: support link */
+						esc_html__( 'Need help with the currency symbol? %s.', 'saudi-riyal-symbol-for-woocommerce' ),
+						'<a href="https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce/" target="_blank" rel="noopener">' . esc_html__( 'Get support', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>'
 					);
 					?>
 				</em>
@@ -182,6 +205,11 @@ class NSRWC_Admin_Notices {
 
 		if ( ! $this->can_show_notices() ) {
 			return;
+		}
+
+		// The install link opens the plugin-information modal, which needs Thickbox.
+		if ( current_user_can( 'install_plugins' ) ) {
+			add_thickbox();
 		}
 
 		wp_enqueue_script(

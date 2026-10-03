@@ -31,6 +31,9 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
 - Symbol size and color settings under WooCommerce > Settings > General > Currency options.
 
+## More from the developer
+- [Mawsim - Sales Goals & Marketing Calendar for WooCommerce](https://wordpress.org/plugins/mawsim/): set a sales goal, see which upcoming occasions (Ramadan, Eid, Founding Day, White Friday) can get you there, and know when to start preparing. Free.
+
 ## Development
 
 ```bash
@@ -55,6 +58,7 @@ composer test        # PHPUnit against the running wp-env
 - Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
 - The Cart and Checkout blocks now get the same size and color as the rest of the store.
 - Added a "Settings" link on the Plugins screen. The plugin removes its options when deleted.
+- The admin notice now introduces Mawsim, the developer's free sales-goals plugin, with a one-click install; it is not shown once Mawsim is installed.
 
 ### 2.3
 - Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
