@@ -63,7 +63,7 @@ function nsrwc_get_symbol_settings_fields(): array {
 		array(
 			'id'       => 'nsrwc_symbol_color',
 			'title'    => __( 'Currency symbol color', 'saudi-riyal-symbol-for-woocommerce' ),
-			'desc'     => __( 'Color of the Gulf currency symbol on your store pages. Leave empty to match the price text. Emails and PDF invoices show the symbol as an image, so the color does not apply there. Prices inside colored buttons keep the button text color in mind.', 'saudi-riyal-symbol-for-woocommerce' ),
+			'desc'     => __( 'Color of the Gulf currency symbol on your store pages. Leave empty to match the price text. Emails and PDF invoices show the symbol as an image, so the color does not apply there. Pick a color that stays readable on your buttons too, since prices can appear inside them.', 'saudi-riyal-symbol-for-woocommerce' ),
 			'desc_tip' => true,
 			'type'     => 'color',
 			'default'  => '',

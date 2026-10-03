@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Saudi Riyal Symbol for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Saudi Riyal Symbol for WooCommerce 1.8\n"
+"Project-Id-Version: Saudi Riyal Symbol for WooCommerce 2.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce\n"
 "POT-Creation-Date: 2025-01-14 16:00+0000\n"
 "PO-Revision-Date: 2025-01-14 16:00+0000\n"
@@ -53,3 +53,24 @@ msgstr "الحصول على الدعم"
 #: includes/class-nsrwc-admin-notices.php:180
 msgid "Hire Developer"
 msgstr "وظف المطور"
+
+#: includes/nsrwc-settings.php
+msgid "Currency symbol size"
+msgstr "حجم رمز العملة"
+
+#: includes/nsrwc-settings.php
+#, php-format
+msgid "Size of the Gulf currency symbol as a percentage of the price text, from %1$d to %2$d. Leave empty to keep the default size."
+msgstr "حجم رمز العملة الخليجية كنسبة مئوية من حجم نص السعر، من %1$d إلى %2$d. اتركه فارغاً للإبقاء على الحجم الافتراضي."
+
+#: includes/nsrwc-settings.php
+msgid "Currency symbol color"
+msgstr "لون رمز العملة"
+
+#: includes/nsrwc-settings.php
+msgid "Color of the Gulf currency symbol on your store pages. Leave empty to match the price text. Emails and PDF invoices show the symbol as an image, so the color does not apply there. Pick a color that stays readable on your buttons too, since prices can appear inside them."
+msgstr "لون رمز العملة الخليجية في صفحات المتجر. اتركه فارغاً ليطابق لون نص السعر. تعرض رسائل البريد وفواتير PDF الرمز كصورة، لذا لا ينطبق اللون عليها. اختر لوناً يبقى مقروءاً داخل الأزرار أيضاً، لأن الأسعار قد تظهر فيها."
+
+#: includes/class-nsrwc-admin-notices.php
+msgid "Settings"
+msgstr "الإعدادات"

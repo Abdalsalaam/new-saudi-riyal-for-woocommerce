@@ -1,0 +1,21 @@
+# Development files kept out of the release zip.
+.DS_Store
+.distignore
+.git
+.github
+.gitignore
+.idea
+.nvmrc
+.phpunit.cache
+.plans
+.playwright-mcp
+.wp-env.json
+composer.json
+composer.lock
+node_modules
+package.json
+package-lock.json
+phpcs.xml.dist
+phpunit.xml.dist
+tests
+vendor

@@ -29,6 +29,17 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - Supports RTL environments, and respects the store's own WooCommerce "Currency position" setting.
 - Supports block-based themes (Cart/Checkout blocks).
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
+- Symbol size and color settings under WooCommerce > Settings > General > Currency options.
+
+## Development
+
+```bash
+composer install && npm install
+composer lint        # WordPress coding standards, PHP 7.4 compatibility
+npm run test:js      # browser script, in jsdom
+npx wp-env start     # WordPress + WooCommerce on http://localhost:8895
+composer test        # PHPUnit against the running wp-env
+```
 
 ## Compatible With
 - WooCommerce emails
@@ -39,6 +50,11 @@ For more details about the Saudi Riyal symbol, please refer to the [Saudi Centra
 - WooCommerce Multi-Currency
 
 ## Changelog
+
+### 2.4
+- Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies everywhere the symbol is shown, including the image in emails and PDF invoices; color applies on store pages.
+- The Cart and Checkout blocks now get the same size and color as the rest of the store.
+- Added a "Settings" link on the Plugins screen. The plugin removes its options when deleted.
 
 ### 2.3
 - Fixed the currency symbol corrupting product feeds, REST API responses and other machine-readable output, and stopped overriding the store's "Currency position" setting (stores that chose "right" will now see the symbol move there).
