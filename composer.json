@@ -25,7 +25,7 @@
     "scripts": {
         "lint": "phpcs",
         "lint:fix": "phpcbf",
-        "test": "wp-env run tests-cli --env-cwd=wp-content/plugins/saudi-riyal-symbol-for-woocommerce vendor/bin/phpunit"
+        "test": "npx wp-env run tests-cli --env-cwd=wp-content/plugins/saudi-riyal-symbol-for-woocommerce vendor/bin/phpunit"
     },
     "scripts-descriptions": {
         "lint": "WordPress coding standards and PHP 7.4 compatibility.",

@@ -1,0 +1,263 @@
+name: Deploy to WordPress.org
+
+# Manual release. The version is typed in on purpose: it has to match the plugin
+# header, the NSRWC_VERSION constant, the readme Stable tag and a changelog entry,
+# and the job stops if any of them disagree.
+#
+# Only tracked files that survive .distignore ship. The package is built from
+# `git archive`, so nothing untracked in a working copy can ever reach it, and an
+# allowlist check fails the run if anything outside the known plugin layout shows up.
+#
+# release_type:
+#   dry        build, verify and list the package; no tag, no release, no SVN commit
+#   production tag vX.Y, publish the GitHub release with the zip, commit SVN trunk
+#              and tags/X.Y on WordPress.org
+#
+# Secrets: SVN_USERNAME and SVN_PASSWORD (WordPress.org account).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 2.4). Must match the plugin header, NSRWC_VERSION and readme.txt.'
+        required: true
+        type: string
+      release_type:
+        description: 'dry: build and preview only. production: tag, GitHub release and WordPress.org deploy.'
+        required: true
+        default: 'dry'
+        type: choice
+        options:
+          - dry
+          - production
+      update_wp_assets:
+        description: 'Also sync .wordpress-org/ (banner, icons, screenshots) to the WordPress.org assets folder.'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-to-wporg
+  cancel-in-progress: false
+
+env:
+  SLUG: saudi-riyal-symbol-for-woocommerce
+  MAIN_FILE: saudi-riyal-symbol-for-woocommerce.php
+  SVN_URL: https://plugins.svn.wordpress.org/saudi-riyal-symbol-for-woocommerce
+
+jobs:
+  validate:
+    name: Validate version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+      tag: ${{ steps.extract.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every version number must agree
+        id: extract
+        run: |
+          INPUT="${{ inputs.version }}"
+          HEADER=$(grep -oP '^ \* Version:\s*\K[0-9]+(\.[0-9]+)+' "$MAIN_FILE" | head -1)
+          CONSTANT=$(grep -oP "NSRWC_VERSION = '\K[0-9]+(\.[0-9]+)+" "$MAIN_FILE" | head -1)
+          STABLE=$(grep -oP '^Stable tag:\s*\K[0-9]+(\.[0-9]+)+' readme.txt | head -1)
+
+          echo "input      : $INPUT"
+          echo "header     : $HEADER"
+          echo "constant   : $CONSTANT"
+          echo "stable tag : $STABLE"
+
+          FAIL=0
+          for PAIR in "header:$HEADER" "constant:$CONSTANT" "stable tag:$STABLE"; do
+            NAME="${PAIR%%:*}"; VALUE="${PAIR#*:}"
+            if [ "$VALUE" != "$INPUT" ]; then
+              echo "::error::$NAME is '$VALUE', expected '$INPUT'"
+              FAIL=1
+            fi
+          done
+          if ! grep -qE "^= ${INPUT//./\\.} =" readme.txt; then
+            echo "::error::readme.txt has no '= $INPUT =' changelog entry"
+            FAIL=1
+          fi
+          [ "$FAIL" = "1" ] && exit 1
+
+          echo "version=$INPUT" >> "$GITHUB_OUTPUT"
+          echo "tag=v$INPUT" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Check, build and deploy
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install tooling
+        run: |
+          composer install --prefer-dist --no-progress --no-interaction
+          npm ci --prefer-offline
+
+      - name: Coding standards and PHP 7.4 compatibility
+        run: composer lint
+
+      - name: Script tests
+        run: npm run test:js
+
+      - name: Build the package from tracked files only
+        id: package
+        run: |
+          STAGE="$RUNNER_TEMP/stage"
+          EXPORT="$RUNNER_TEMP/export"
+          mkdir -p "$STAGE" "$EXPORT"
+
+          # git archive exports tracked files only: an untracked file in a working
+          # copy (credentials, scratch files, IDE folders) cannot end up here.
+          git archive HEAD | tar -x -C "$EXPORT"
+
+          rsync -rc --exclude-from="$EXPORT/.distignore" --delete "$EXPORT/" "$STAGE/$SLUG/"
+
+          echo "--- package contents ---"
+          (cd "$STAGE/$SLUG" && find . -type f | sort)
+
+          echo "--- allowlist check ---"
+          ALLOWED='^\./(assets/|includes/|languages/|readme\.txt$|readme\.md$|riyal-cover\.png$|saudi-riyal-symbol-for-woocommerce\.php$|uninstall\.php$)'
+          UNEXPECTED=$(cd "$STAGE/$SLUG" && find . -type f | grep -vE "$ALLOWED" || true)
+          if [ -n "$UNEXPECTED" ]; then
+            echo "::error::Files outside the plugin layout would ship:"
+            echo "$UNEXPECTED"
+            exit 1
+          fi
+          for MUST in "$MAIN_FILE" readme.txt uninstall.php assets/css/style.css assets/js/gulf-currencies.js includes/nsrwc-settings.php languages/saudi-riyal-symbol-for-woocommerce-ar.mo; do
+            [ -f "$STAGE/$SLUG/$MUST" ] || { echo "::error::$MUST is missing from the package"; exit 1; }
+          done
+          echo "Package contains only the plugin layout."
+
+          echo "--- syntax check of the shipped PHP (7.4) ---"
+          find "$STAGE/$SLUG" -name '*.php' -print0 | xargs -0 -n1 php -l | grep -v 'No syntax errors' && exit 1 || true
+
+          ZIP="$RUNNER_TEMP/$SLUG.${{ needs.validate.outputs.version }}.zip"
+          (cd "$STAGE" && zip -qr -X "$ZIP" "$SLUG")
+          unzip -l "$ZIP" | tail -1
+          echo "stage=$STAGE/$SLUG" >> "$GITHUB_OUTPUT"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the package as a run artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SLUG }}-${{ needs.validate.outputs.version }}
+          path: ${{ steps.package.outputs.zip }}
+          retention-days: 14
+
+      - name: Release notes from readme.txt
+        id: notes
+        run: |
+          VERSION="${{ needs.validate.outputs.version }}"
+          awk -v ver="$VERSION" '
+            /^= / { if (found) exit; if ($0 == "= " ver " =") found=1; next }
+            found { print }
+          ' readme.txt | sed '/^$/d' > "$RUNNER_TEMP/notes.md"
+          echo "--- release notes ---"
+          cat "$RUNNER_TEMP/notes.md"
+          [ -s "$RUNNER_TEMP/notes.md" ] || { echo "::error::Empty changelog for $VERSION"; exit 1; }
+
+      - name: Dry run summary
+        if: ${{ inputs.release_type == 'dry' }}
+        run: |
+          echo "Dry run. Nothing was tagged, released or committed."
+          echo "Would create tag ${{ needs.validate.outputs.tag }}, a GitHub release with $(basename "${{ steps.package.outputs.zip }}"), and SVN trunk + tags/${{ needs.validate.outputs.version }}."
+
+      - name: Refuse to overwrite an existing release
+        if: ${{ inputs.release_type == 'production' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.validate.outputs.tag }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::error::GitHub release $TAG already exists."
+            exit 1
+          fi
+          sudo apt-get install -y subversion >/dev/null
+          if svn ls "$SVN_URL/tags/${{ needs.validate.outputs.version }}" --non-interactive >/dev/null 2>&1; then
+            echo "::error::WordPress.org tag ${{ needs.validate.outputs.version }} already exists."
+            exit 1
+          fi
+
+      - name: Tag and publish the GitHub release
+        if: ${{ inputs.release_type == 'production' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.validate.outputs.tag }}"
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "$TAG"
+            git push origin "$TAG"
+          fi
+          gh release create "$TAG" "${{ steps.package.outputs.zip }}" \
+            --title "$TAG" \
+            --notes-file "$RUNNER_TEMP/notes.md" \
+            --target "$GITHUB_SHA"
+
+      - name: Deploy to WordPress.org trunk and tag
+        if: ${{ inputs.release_type == 'production' }}
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          if [ -z "$SVN_USERNAME" ] || [ -z "$SVN_PASSWORD" ]; then
+            echo "::error::SVN_USERNAME and SVN_PASSWORD secrets are not set."
+            exit 1
+          fi
+          VERSION="${{ needs.validate.outputs.version }}"
+          SVN_DIR="$RUNNER_TEMP/svn"
+          AUTH=(--username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache --non-interactive)
+
+          svn checkout "$SVN_URL" "$SVN_DIR" --depth immediates "${AUTH[@]}"
+          svn update "$SVN_DIR/trunk" --set-depth infinity "${AUTH[@]}"
+
+          # The staged package is the single source: trunk becomes exactly it.
+          rsync -rc --delete --exclude '.svn' "${{ steps.package.outputs.stage }}/" "$SVN_DIR/trunk/"
+
+          svn add "$SVN_DIR/trunk" --force --non-interactive >/dev/null
+          svn status "$SVN_DIR/trunk" | grep '^!' | awk '{print $2}' | xargs -r svn rm --force --non-interactive
+
+          echo "--- trunk changes ---"
+          svn status "$SVN_DIR/trunk"
+
+          svn commit "$SVN_DIR/trunk" --message "Update trunk to $VERSION" "${AUTH[@]}"
+          svn copy "$SVN_URL/trunk" "$SVN_URL/tags/$VERSION" --message "Tag $VERSION" "${AUTH[@]}"
+
+      - name: Update WordPress.org assets
+        if: ${{ inputs.release_type == 'production' && inputs.update_wp_assets }}
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          if [ ! -d .wordpress-org ]; then
+            echo "::error::.wordpress-org/ does not exist in the repository."
+            exit 1
+          fi
+          SVN_DIR="$RUNNER_TEMP/svn"
+          AUTH=(--username "$SVN_USERNAME" --password "$SVN_PASSWORD" --no-auth-cache --non-interactive)
+          svn update "$SVN_DIR/assets" --set-depth infinity "${AUTH[@]}"
+          rsync -rc --delete --exclude '.svn' .wordpress-org/ "$SVN_DIR/assets/"
+          svn add "$SVN_DIR/assets" --force --non-interactive >/dev/null
+          svn status "$SVN_DIR/assets" | grep '^!' | awk '{print $2}' | xargs -r svn rm --force --non-interactive
+          svn commit "$SVN_DIR/assets" --message "Update assets" "${AUTH[@]}"
