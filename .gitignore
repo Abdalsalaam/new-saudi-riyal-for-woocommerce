@@ -6,3 +6,4 @@
 /.phpunit.cache/
 /.phpunit.result.cache
 /.playwright-mcp/
+/svn.secret

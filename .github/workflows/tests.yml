@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    name: Lint, script tests and PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install tooling
+        run: |
+          composer install --prefer-dist --no-progress --no-interaction
+          npm ci --prefer-offline
+
+      - name: Coding standards and PHP 7.4 compatibility
+        run: composer lint
+
+      - name: Script tests
+        run: npm run test:js
+
+      - name: Start WordPress and WooCommerce
+        run: |
+          npx wp-env start
+          npx wp-env run tests-cli wp plugin activate woocommerce saudi-riyal-symbol-for-woocommerce
+
+      - name: PHPUnit
+        run: composer test
