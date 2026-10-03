@@ -96,7 +96,13 @@ function nsrwc_add_symbol_settings( $settings ) {
 		++$position;
 
 		if ( isset( $setting['id'] ) && 'woocommerce_currency_pos' === $setting['id'] ) {
-			array_splice( $settings, $position, 0, nsrwc_get_symbol_settings_fields() );
+			$fields = nsrwc_get_symbol_settings_fields();
+
+			if ( nsrwc_promote_mawsim() ) {
+				$fields[] = nsrwc_get_mawsim_settings_row();
+			}
+
+			array_splice( $settings, $position, 0, $fields );
 			break;
 		}
 	}
