@@ -210,9 +210,12 @@ class NSRWC_Admin_Notices {
 	 * @return array Modified links.
 	 */
 	public function add_plugin_action_links( array $links ): array {
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=general#nsrwc_symbol_size' );
+
 		$custom_links = array(
-			'support' => '<a href="https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce/" target="_blank">' . __( 'Get Support', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',
-			'hire'    => '<a href="https://halawa.io" target="_blank" style="color:#00a32a;font-weight:bold;">' . __( 'Hire Developer', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',
+			'settings' => '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',
+			'support'  => '<a href="https://wordpress.org/support/plugin/saudi-riyal-symbol-for-woocommerce/" target="_blank">' . __( 'Get Support', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',
+			'hire'     => '<a href="https://halawa.io" target="_blank" style="color:#00a32a;font-weight:bold;">' . __( 'Hire Developer', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',
 		);
 
 		return array_merge( $custom_links, $links );
