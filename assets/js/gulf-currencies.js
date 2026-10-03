@@ -45,6 +45,11 @@
 	// Elements that already hold only the glyph; never wrap inside these.
 	const WRAPPER_SELECTOR = '.nsrwc-symbol, .woocommerce-Price-currencySymbol, .sar-currency-symbol';
 
+	// Elements whose text is data, not rendered content. A glyph inside a JSON
+	// state block or a <textarea> is not a price on screen, and editing it would
+	// corrupt what another script reads.
+	const DATA_TAGS = { SCRIPT: true, STYLE: true, TEXTAREA: true, TITLE: true, NOSCRIPT: true, TEMPLATE: true, OPTION: true };
+
 	// Build symbols array from localized data or fallbacks (SAR=U+20C1, AED=U+E001, OMR=U+E900)
 	const symbols = ( typeof nsrwcGulfCurrencies !== 'undefined' && nsrwcGulfCurrencies.symbols )
 		? Object.values( nsrwcGulfCurrencies.symbols )
@@ -195,6 +200,12 @@
 	 * Process a text node: wrap its glyphs, or mark its parent.
 	 */
 	function processTextNode( node ) {
+		const owner = node.parentElement;
+
+		if ( ! owner || DATA_TAGS[ owner.tagName ] ) {
+			return;
+		}
+
 		const record = wrapped.get( node );
 
 		if ( record ) {

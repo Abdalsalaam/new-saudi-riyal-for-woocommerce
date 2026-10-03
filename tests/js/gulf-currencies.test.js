@@ -178,3 +178,26 @@ test( 'text without a glyph is untouched', async () => {
 	assert.equal( price.childNodes.length, 1 );
 	assert.equal( price.className, '' );
 });
+
+test( 'text inside script, style and textarea elements is data and is never touched', async () => {
+	const json = JSON.stringify( { price: `${ SAR }10.00` } );
+	const window = boot( `<script type="application/json" id="state">${ json }</script><style id="css">.x::before{content:"${ SAR }"}</style><textarea id="ta">${ SAR }10</textarea>` );
+	await settle();
+
+	const doc = window.document;
+	assert.equal( doc.getElementById( 'state' ).textContent, json );
+	assert.deepEqual( JSON.parse( doc.getElementById( 'state' ).textContent ), { price: `${ SAR }10.00` } );
+	assert.equal( doc.getElementById( 'css' ).textContent, `.x::before{content:"${ SAR }"}` );
+	assert.equal( doc.getElementById( 'ta' ).textContent, `${ SAR }10` );
+	assert.equal( doc.querySelectorAll( '.nsrwc-symbol' ).length, 0 );
+	assert.equal( doc.querySelectorAll( '.gulf-currency' ).length, 0 );
+});
+
+test( 'screen reader text that is only a price sentence is still wrapped', async () => {
+	const window = boot( `<span class="screen-reader-text" id="sr">Current price is: ${ SAR }99.50.</span>` );
+	await settle();
+
+	const sr = window.document.getElementById( 'sr' );
+	assert.equal( sr.querySelectorAll( '.nsrwc-symbol' ).length, 1 );
+	assert.equal( sr.textContent, `Current price is: ${ SAR }99.50.` );
+});
