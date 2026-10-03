@@ -445,7 +445,7 @@ function nsrwc_replace_gulf_currency_symbol( $currency_symbol, $currency ) {
 			return $currency_symbol;
 		}
 
-		return '<img src="' . esc_url( plugins_url( 'assets/icons/png/' . $config['png'], __FILE__ ) ) . '" alt="' . esc_attr( $currency ) . '" style="vertical-align: middle; margin: 0 !important; height: 1em; font-size: inherit !important;">';
+		return '<img src="' . esc_url( plugins_url( 'assets/icons/png/' . $config['png'], __FILE__ ) ) . '" alt="' . esc_attr( $currency ) . '" style="vertical-align: middle; margin: 0 !important; height: ' . esc_attr( nsrwc_get_symbol_image_height() ) . '; font-size: inherit !important;">';
 	}
 
 	return $config['char'];

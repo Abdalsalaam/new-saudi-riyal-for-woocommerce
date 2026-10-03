@@ -274,3 +274,27 @@ function nsrwc_add_custom_symbol_css() {
 		wp_add_inline_style( 'gulf-currencies-style', $css );
 	}
 }
+
+/**
+ * Height of the symbol image used in HTML emails and PDF invoices.
+ *
+ * Those contexts never load the stylesheet, so the size setting is applied to the
+ * image directly. Formatted without the server locale: a float cast under a
+ * comma-decimal locale would produce "1,3em", which is not CSS.
+ *
+ * @since 2.4
+ *
+ * @return string CSS length, for example "1em" or "1.3em".
+ */
+function nsrwc_get_symbol_image_height(): string {
+	$size = nsrwc_get_symbol_size();
+
+	if ( null === $size ) {
+		return '1em';
+	}
+
+	$em = number_format( $size / 100, 2, '.', '' );
+	$em = rtrim( rtrim( $em, '0' ), '.' );
+
+	return $em . 'em';
+}
