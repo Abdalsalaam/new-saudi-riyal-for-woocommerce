@@ -40,7 +40,7 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 == Changelog ==
 
 = 2.4 =
-- Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies everywhere the symbol is shown, including the image in emails and PDF invoices; color applies on store pages.
+- Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
 - The Cart and Checkout blocks now get the same size and color as the rest of the store.
 - Added a "Settings" link on the Plugins screen. The plugin removes its options when deleted.
 

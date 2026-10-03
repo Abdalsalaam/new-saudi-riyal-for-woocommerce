@@ -210,7 +210,12 @@ class NSRWC_Admin_Notices {
 	 * @return array Modified links.
 	 */
 	public function add_plugin_action_links( array $links ): array {
-		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=general#nsrwc_symbol_size' );
+		$settings_url = admin_url( 'admin.php?page=wc-settings&tab=general' );
+
+		// The fields are only on the page for stores that render the glyph.
+		if ( nsrwc_should_load_assets() ) {
+			$settings_url .= '#nsrwc_symbol_size';
+		}
 
 		$custom_links = array(
 			'settings' => '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'saudi-riyal-symbol-for-woocommerce' ) . '</a>',

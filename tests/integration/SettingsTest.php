@@ -129,6 +129,27 @@ class SettingsTest extends WP_UnitTestCase {
 		$this->assertSame( 'nsrwc_symbol_color', $ids[ $position + 2 ] );
 	}
 
+	public function test_insertion_survives_entries_without_an_id_and_gapped_keys(): void {
+		$settings = array(
+			3  => array( 'type' => 'title' ),
+			7  => array( 'id' => 'woocommerce_currency' ),
+			9  => array( 'id' => 'woocommerce_currency_pos' ),
+			12 => array( 'id' => 'woocommerce_price_thousand_sep' ),
+		);
+
+		$ids = array_map(
+			static function ( $setting ) {
+				return isset( $setting['id'] ) ? $setting['id'] : '(no id)';
+			},
+			nsrwc_add_symbol_settings( $settings )
+		);
+
+		$this->assertSame(
+			array( '(no id)', 'woocommerce_currency', 'woocommerce_currency_pos', 'nsrwc_symbol_size', 'nsrwc_symbol_color', 'woocommerce_price_thousand_sep' ),
+			array_values( $ids )
+		);
+	}
+
 	public function test_fields_are_absent_on_a_non_gulf_store(): void {
 		update_option( 'woocommerce_currency', 'USD' );
 		nsrwc_reset_currency_cache();

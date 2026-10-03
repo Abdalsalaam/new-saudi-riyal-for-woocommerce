@@ -88,15 +88,18 @@ function nsrwc_add_symbol_settings( $settings ) {
 		return $settings;
 	}
 
-	// Positional lookup: the array keys WooCommerce builds are not guaranteed to be
-	// sequential, and array_splice() works on positions, not keys.
-	$position = array_search( 'woocommerce_currency_pos', array_column( $settings, 'id' ), true );
+	// array_splice() works on positions, not keys, and the keys WooCommerce builds
+	// are not guaranteed to be sequential, so count the position by hand.
+	$position = 0;
 
-	if ( false === $position ) {
-		return $settings;
+	foreach ( $settings as $setting ) {
+		++$position;
+
+		if ( isset( $setting['id'] ) && 'woocommerce_currency_pos' === $setting['id'] ) {
+			array_splice( $settings, $position, 0, nsrwc_get_symbol_settings_fields() );
+			break;
+		}
 	}
-
-	array_splice( $settings, $position + 1, 0, nsrwc_get_symbol_settings_fields() );
 
 	return $settings;
 }

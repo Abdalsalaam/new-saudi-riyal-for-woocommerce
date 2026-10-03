@@ -137,6 +137,12 @@
 			return false;
 		}
 
+		// An HTML <span> inside SVG <text> (Analytics chart labels) does not render,
+		// so the glyph would vanish. Those keep the fallback.
+		if ( parent.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) {
+			return false;
+		}
+
 		if ( parent.closest && parent.closest( WRAPPER_SELECTOR ) ) {
 			return false;
 		}

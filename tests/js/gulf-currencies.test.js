@@ -201,3 +201,14 @@ test( 'screen reader text that is only a price sentence is still wrapped', async
 	assert.equal( sr.querySelectorAll( '.nsrwc-symbol' ).length, 1 );
 	assert.equal( sr.textContent, `Current price is: ${ SAR }99.50.` );
 });
+
+test( 'SVG text keeps the fallback because an HTML span would not render there', async () => {
+	const window = boot( `<svg xmlns="http://www.w3.org/2000/svg"><text id="label">${ SAR }1,000</text></svg>`, 'wp-admin' );
+	await settle();
+
+	const label = window.document.getElementById( 'label' );
+	assert.equal( label.querySelectorAll( '.nsrwc-symbol' ).length, 0 );
+	assert.equal( label.childNodes.length, 1 );
+	assert.equal( label.classList.contains( 'gulf-currency-dashboard' ), true );
+	assert.equal( label.textContent, `${ SAR }1,000` );
+});
