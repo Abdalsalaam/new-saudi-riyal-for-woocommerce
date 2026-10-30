@@ -7,7 +7,7 @@ Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC tested up to: 11.1
-Stable tag: 2.4
+Stable tag: 2.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,7 +24,7 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 == Features ==
 - Supports Saudi Riyal (SAR), UAE Dirham (AED), and Omani Rial (OMR) symbols.
 - Displays the currency symbols on the front-end, admin dashboard, WooCommerce emails, and PDF invoices.
-- Supports RTL environments by forcing the symbol to appear on the left.
+- Supports RTL environments, and respects the store's own WooCommerce "Currency position" setting.
 - Supports block-based themes (Cart/Checkout blocks).
 - Compatible with popular currency switcher plugins (WOOCS, Multi Currency for WooCommerce, and more).
 - Symbol size and color settings under WooCommerce > Settings > General > Currency options.
@@ -41,6 +41,9 @@ Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, 
 - [Mawsim - Sales Goals & Marketing Calendar for WooCommerce](https://wordpress.org/plugins/mawsim/): set a sales goal, see which upcoming occasions (Ramadan, Eid, Founding Day, White Friday) can get you there, and know when to start preparing. Free.
 
 == Changelog ==
+
+= 2.5 =
+- Fixed admin screens that load amounts through the REST API, such as the Advanced Coupons store credit tables, showing "ر.س" instead of the new symbol.
 
 = 2.4 =
 - Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
