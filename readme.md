@@ -54,6 +54,9 @@ composer test        # PHPUnit against the running wp-env
 
 ## Changelog
 
+### 2.5
+- Fixed admin screens that load amounts through the REST API, such as the Advanced Coupons store credit tables, showing "ر.س" instead of the new symbol.
+
 ### 2.4
 - Added "Currency symbol size" and "Currency symbol color" settings under WooCommerce > Settings > General > Currency options. Size applies on store pages, emails and PDF invoices; color applies on store pages.
 - The Cart and Checkout blocks now get the same size and color as the rest of the store.

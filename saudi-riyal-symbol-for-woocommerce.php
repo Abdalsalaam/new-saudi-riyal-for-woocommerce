@@ -3,7 +3,7 @@
  * Plugin Name: Gulf currencies Symbols for WooCommerce - رمز الريال السعودي والدرهم الإماراتي
  * Plugin URI: https://wordpress.org/plugins/saudi-riyal-symbol-for-woocommerce
  * Description: Adds support for the new Saudi Riyal symbol, UAE Dirham and Omani Rial symbols, in WooCommerce.
- * Version: 2.4
+ * Version: 2.5
  * Author: Abdalsalaam Halawa
  * Author URI: https://halawa.io
  * Text Domain: saudi-riyal-symbol-for-woocommerce
@@ -37,7 +37,7 @@ if (
 /**
  * Plugin version.
  */
-const NSRWC_VERSION = '2.4';
+const NSRWC_VERSION = '2.5';
 
 /**
  * Gulf currencies configuration.
@@ -189,10 +189,11 @@ function nsrwc_should_load_assets() {
 /**
  * Whether the request is being served to a machine rather than a browser.
  *
- * REST (other than the Store API, which drives the Cart/Checkout blocks), WP-CLI,
- * cron, XML-RPC and feeds all produce output that some other system parses. The
- * custom glyphs are meaningless there — AED and OMR in particular are Private Use
- * Area codepoints — so those contexts always get WooCommerce's own symbol.
+ * REST (other than the Store API, which drives the Cart/Checkout blocks, and
+ * requests from a logged-in browser session), WP-CLI, cron, XML-RPC and feeds
+ * all produce output that some other system parses. The custom glyphs are
+ * meaningless there — AED and OMR in particular are Private Use Area
+ * codepoints — so those contexts always get WooCommerce's own symbol.
  *
  * @since 2.3
  *
@@ -211,7 +212,11 @@ function nsrwc_is_machine_context() {
 		return true;
 	}
 
-	if ( defined( 'REST_REQUEST' ) && REST_REQUEST && ! nsrwc_is_store_api_request() ) {
+	if (
+		defined( 'REST_REQUEST' ) && REST_REQUEST
+		&& ! nsrwc_is_store_api_request()
+		&& ! nsrwc_is_browser_rest_request()
+	) {
 		return true;
 	}
 
@@ -243,6 +248,29 @@ function nsrwc_is_store_api_request() {
 	}
 
 	return false !== strpos( $route, '/wc/store/' );
+}
+
+/**
+ * Whether the current REST request comes from a logged-in user's browser session.
+ *
+ * React admin screens, such as Advanced Coupons' store credit tables, load
+ * formatted amounts through the REST API and show them to a person. Core only
+ * keeps the user logged in on such a request when it carries a valid `wp_rest`
+ * nonce, so cookie auth plus a logged-in user after the authentication check
+ * means a page in a browser made the request. Application passwords, API keys
+ * and anonymous requests stay machine output.
+ *
+ * @since 2.5
+ *
+ * @return bool
+ */
+function nsrwc_is_browser_rest_request() {
+	// The nonce is checked on this filter; before it runs, a cookie alone proves nothing.
+	if ( ! did_filter( 'rest_authentication_errors' ) ) {
+		return false;
+	}
+
+	return true === ( $GLOBALS['wp_rest_auth_cookie'] ?? null ) && is_user_logged_in();
 }
 
 /**
